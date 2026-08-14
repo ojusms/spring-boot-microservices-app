@@ -70,4 +70,14 @@ public class AccountsServiceImpl implements IAccountsService {
         newAccount.setCreatedBy("Anonymous");
         return newAccount;
     }
+
+    /**
+     *
+     * @param mobileNumber input mobile number to look up customer by
+     * @return CustomerDTO object containing customer details
+     */
+    @Override
+    public CustomerDTO fetchAccount(String mobileNumber) {
+        return null;
+    }
 }
