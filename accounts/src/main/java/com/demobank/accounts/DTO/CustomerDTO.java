@@ -2,8 +2,9 @@ package com.demobank.accounts.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Data @AllArgsConstructor
+@Data @AllArgsConstructor @NoArgsConstructor
 public class CustomerDTO {
 
     private String name;
@@ -11,4 +12,6 @@ public class CustomerDTO {
     private String email;
 
     private String mobileNumber;
+
+    private AccountsDTO accountsDTO;
 }

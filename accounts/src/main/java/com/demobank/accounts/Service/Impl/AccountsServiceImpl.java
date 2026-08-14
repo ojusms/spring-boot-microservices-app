@@ -1,9 +1,12 @@
 package com.demobank.accounts.Service.Impl;
 
 import com.demobank.accounts.Constants.AccountsConstants;
+import com.demobank.accounts.DTO.AccountsDTO;
 import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.Entity.Accounts;
 import com.demobank.accounts.Entity.Customer;
+import com.demobank.accounts.Exception.ResourceNotFoundException;
+import com.demobank.accounts.Mapper.AccountsMapper;
 import com.demobank.accounts.Mapper.CustomerMapper;
 import com.demobank.accounts.Exception.CustomerAlreadyExistsException;
 import com.demobank.accounts.Repository.AccountsRepository;
@@ -78,6 +81,21 @@ public class AccountsServiceImpl implements IAccountsService {
      */
     @Override
     public CustomerDTO fetchAccount(String mobileNumber) {
-        return null;
+        // if customer found, return Customer obj, else calls Optional<>.orElseThrow() to throw
+        // not found exception
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer","mobileNumber",mobileNumber)
+        );
+        // if customer found, we want to find the account table entry having the customer ID
+        // value and get the details. Update AccountsRepository with a method to find by Cust ID and use it.
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                () -> new ResourceNotFoundException("Account","customerId", customer.getCustomerId().toString())
+        );
+        // now we found Customer and Account details but we return CustomerDTO which consists of only Customer details.
+        // So we update the CustomeDTO with a new field of AccountsDTO type so the returned CustomerDTO has account info also.
+        // Map the found Customer and Accounts to their respective DTO with Mapper to show selective info
+        CustomerDTO customerDTO = CustomerMapper.mapToCustomerDTO(customer, new CustomerDTO());
+        customerDTO.setAccountsDTO(AccountsMapper.mapToAccountsDTO(accounts, new AccountsDTO()));
+        return customerDTO;
     }
 }
