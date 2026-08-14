@@ -5,12 +5,14 @@ import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.Entity.Accounts;
 import com.demobank.accounts.Entity.Customer;
 import com.demobank.accounts.Mapper.CustomerMapper;
+import com.demobank.accounts.Package.CustomerAlreadyExistsException;
 import com.demobank.accounts.Repository.AccountsRepository;
 import com.demobank.accounts.Repository.CustomerRepository;
 import com.demobank.accounts.Service.IAccountsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 /* Following best practice of creating a separate Impl package within, and naming with postfix "Impl"
@@ -35,6 +37,12 @@ public class AccountsServiceImpl implements IAccountsService {
     public void createAccount(CustomerDTO customerDTO) {
         // use the Mapper class to populate Customer Entity from Customer DTO
         Customer customer = CustomerMapper.mapToCustomer(customerDTO, new Customer());
+        // update to check if an existing customer exists with the same number and throw an exception
+        Optional<Customer> optionalCustomer = customerRepository.findByMobileNumber(customerDTO.getMobileNumber());
+        if (optionalCustomer.isPresent()) {
+            throw new CustomerAlreadyExistsException("Customer already exists with mobileNumber "
+            + customerDTO.getMobileNumber());
+        }
         // save the customer to DB and access the returned customer object for the Customer ID
         Customer savedCustomer = customerRepository.save(customer);
         // call the helper method to create an account for the new customer and save it in the DB
