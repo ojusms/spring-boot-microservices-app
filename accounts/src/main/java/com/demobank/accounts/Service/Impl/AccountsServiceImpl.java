@@ -5,7 +5,7 @@ import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.Entity.Accounts;
 import com.demobank.accounts.Entity.Customer;
 import com.demobank.accounts.Mapper.CustomerMapper;
-import com.demobank.accounts.Package.CustomerAlreadyExistsException;
+import com.demobank.accounts.Exception.CustomerAlreadyExistsException;
 import com.demobank.accounts.Repository.AccountsRepository;
 import com.demobank.accounts.Repository.CustomerRepository;
 import com.demobank.accounts.Service.IAccountsService;
