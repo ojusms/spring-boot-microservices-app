@@ -1,7 +1,9 @@
 package com.demobank.accounts.Controller;
 
+import com.demobank.accounts.Constants.AccountsConstants;
 import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,12 @@ public class AccountsController {
     // The data passed from HTTP request is bound to the method parameter of type CustomerDTO
     @PostMapping("/create")
     public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO) {
-        return null;
+
+        // returning ResponseEntity instead of ResponseDTO directly because it allows us to
+        // add some metadata such as HTTP status and header info, whereas in ResponseDTO, the response would
+        // directly be only in the response body
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new ResponseDTO(AccountsConstants.STATUS_201, AccountsConstants.MESSAGE_201));
     }
 }
