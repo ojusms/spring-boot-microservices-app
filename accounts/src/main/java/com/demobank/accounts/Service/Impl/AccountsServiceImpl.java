@@ -12,6 +12,7 @@ import com.demobank.accounts.Service.IAccountsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
@@ -43,6 +44,8 @@ public class AccountsServiceImpl implements IAccountsService {
             throw new CustomerAlreadyExistsException("Customer already exists with mobileNumber "
             + customerDTO.getMobileNumber());
         }
+        customer.setCreatedAt(LocalDateTime.now());
+        customer.setCreatedBy("Anonymous");
         // save the customer to DB and access the returned customer object for the Customer ID
         Customer savedCustomer = customerRepository.save(customer);
         // call the helper method to create an account for the new customer and save it in the DB
@@ -63,6 +66,8 @@ public class AccountsServiceImpl implements IAccountsService {
         newAccount.setAccountNumber(randomAccNumber);
         newAccount.setAccountType(AccountsConstants.SAVINGS);
         newAccount.setBranchAddress(AccountsConstants.ADDRESS);
+        newAccount.setCreatedAt(LocalDateTime.now());
+        newAccount.setCreatedBy("Anonymous");
         return newAccount;
     }
 }
