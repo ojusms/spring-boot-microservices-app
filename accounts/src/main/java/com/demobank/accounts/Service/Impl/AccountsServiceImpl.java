@@ -1,11 +1,17 @@
 package com.demobank.accounts.Service.Impl;
 
+import com.demobank.accounts.Constants.AccountsConstants;
 import com.demobank.accounts.DTO.CustomerDTO;
+import com.demobank.accounts.Entity.Accounts;
+import com.demobank.accounts.Entity.Customer;
+import com.demobank.accounts.Mapper.CustomerMapper;
 import com.demobank.accounts.Repository.AccountsRepository;
 import com.demobank.accounts.Repository.CustomerRepository;
 import com.demobank.accounts.Service.IAccountsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Random;
 
 /* Following best practice of creating a separate Impl package within, and naming with postfix "Impl"
 for interface implementation classes.
@@ -27,6 +33,28 @@ public class AccountsServiceImpl implements IAccountsService {
      */
     @Override
     public void createAccount(CustomerDTO customerDTO) {
+        // use the Mapper class to populate Customer Entity from Customer DTO
+        Customer customer = CustomerMapper.mapToCustomer(customerDTO, new Customer());
+        // save the customer to DB and access the returned customer object for the Customer ID
+        Customer savedCustomer = customerRepository.save(customer);
+        // call the helper method to create an account for the new customer and save it in the DB
+        accountsRepository.save(createNewAccount(savedCustomer));
 
+    }
+
+    /**
+     * Helper method to create an Account for a Customer
+     * @param customer Customer
+     * @return Accounts
+     */
+    private Accounts createNewAccount(Customer customer) {
+        Accounts newAccount = new Accounts();
+        newAccount.setCustomerId(customer.getCustomerId());
+        // generate a random account number of 10 digits
+        long randomAccNumber = 1000000000L + new Random().nextInt(900000000);
+        newAccount.setAccountNumber(randomAccNumber);
+        newAccount.setAccountType(AccountsConstants.SAVINGS);
+        newAccount.setBranchAddress(AccountsConstants.ADDRESS);
+        return newAccount;
     }
 }

@@ -2,6 +2,8 @@ package com.demobank.accounts.Mapper;
 
 import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.Entity.Customer;
+// can use 3rd party libraries like ModelMapper and MapStruct also in place of writing out below functions
+
 /**
  Mapper class with methods to map data between Entity class and DTO class.
  */
