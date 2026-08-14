@@ -38,6 +38,7 @@ public class AccountsController {
     // mobileNumber method argument is mapped to the request query parameter in the url
     @GetMapping("/fetch")
     public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobileNumber) {
-        return null;
+        CustomerDTO customerDTO = iAccountsService.fetchAccount(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
     }
 }
