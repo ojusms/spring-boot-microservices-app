@@ -114,9 +114,10 @@ public class AccountsServiceImpl implements IAccountsService {
             );
             AccountsMapper.mapToAccounts(accountsDTO, accounts);
             accountsRepository.save(accounts);
-            Customer customer = customerRepository.findByMobileNumber(customerDTO.getMobileNumber()).orElseThrow(
-                    () -> new ResourceNotFoundException("Customer","mobileNumber", customerDTO.getMobileNumber())
+            Customer customer = customerRepository.findById(accounts.getCustomerId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Customer","customerId", accounts.getCustomerId().toString())
             );
+            CustomerMapper.mapToCustomer(customerDTO, customer);
             customerRepository.save(customer);
             isUpdated = true;
         }
