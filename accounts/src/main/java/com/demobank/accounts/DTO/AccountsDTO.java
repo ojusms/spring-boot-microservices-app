@@ -12,7 +12,7 @@ and using a 'mapper' or 'assembler' to create an output object that has fields f
 
 @Data @AllArgsConstructor @NoArgsConstructor
 public class AccountsDTO {
-    private long accountNumber;
+    private Long accountNumber;
 
     private String accountType;
 
