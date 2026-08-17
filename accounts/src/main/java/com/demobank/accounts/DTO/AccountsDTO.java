@@ -1,6 +1,8 @@
 package com.demobank.accounts.DTO;
 
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +14,13 @@ and using a 'mapper' or 'assembler' to create an output object that has fields f
 
 @Data @AllArgsConstructor @NoArgsConstructor
 public class AccountsDTO {
+    @NotNull(message = "Account Number cannot be null or empty")
+    @Pattern(regexp = "^$|[0-9]{10}", message = "Account Number must be only 10 digits")
     private Long accountNumber;
 
+    @NotNull(message = "Account Type cannot be null or empty")
     private String accountType;
 
+    @NotNull(message = "Branch Address cannot be null or empty")
     private String branchAddress;
 }

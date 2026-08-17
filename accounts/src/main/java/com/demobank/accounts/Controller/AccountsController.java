@@ -4,15 +4,19 @@ import com.demobank.accounts.Constants.AccountsConstants;
 import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
 import com.demobank.accounts.Service.IAccountsService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
 @AllArgsConstructor
+@Validated
 public class AccountsController {
 
     /* add AccountsService field for saving the Accounts object. Add Lombok annotation for all args
@@ -23,7 +27,7 @@ public class AccountsController {
     // POST mapping available at "/api/create".
     // The data passed from HTTP request is bound to the method parameter of type CustomerDTO
     @PostMapping("/create")
-    public ResponseEntity<ResponseDTO> createAccount(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<ResponseDTO> createAccount(@Valid @RequestBody CustomerDTO customerDTO) {
         // save the account using the new Service object
         iAccountsService.createAccount(customerDTO);
         // returning ResponseEntity instead of ResponseDTO directly because it allows us to
@@ -37,7 +41,10 @@ public class AccountsController {
     // GET mapping at "/api/fetch" to find and return a customer's details by mobile number
     // mobileNumber method argument is mapped to the request query parameter in the url
     @GetMapping("/fetch")
-    public ResponseEntity<CustomerDTO> fetchAccountDetails(@RequestParam String mobileNumber) {
+    public ResponseEntity<CustomerDTO> fetchAccountDetails(
+            @RequestParam
+            @Pattern(regexp = "^$|[0-9]{10}", message = "Mobile number must be 10 digits only")
+            String mobileNumber) {
         CustomerDTO customerDTO = iAccountsService.fetchAccount(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(customerDTO);
     }
@@ -47,7 +54,7 @@ public class AccountsController {
     and related account details.
      */
     @PutMapping("/update")
-    public ResponseEntity<ResponseDTO> updateAccountDetails(@RequestBody CustomerDTO customerDTO) {
+    public ResponseEntity<ResponseDTO> updateAccountDetails(@Valid @RequestBody CustomerDTO customerDTO) {
         boolean updated = iAccountsService.updateAccount(customerDTO);
         if (updated) {
             return ResponseEntity
@@ -66,7 +73,10 @@ public class AccountsController {
     mobile number in query parameter
     */
     @DeleteMapping("/delete")
-    public ResponseEntity<ResponseDTO> deleteAccount(@RequestParam String mobileNumber) {
+    public ResponseEntity<ResponseDTO> deleteAccount(
+            @RequestParam
+            @Pattern(regexp = "^$|[0-9]{10}", message = "Mobile Number must be only 10 digits")
+            String mobileNumber) {
         boolean deleted = iAccountsService.deleteAccount(mobileNumber);
         if (deleted) {
             return ResponseEntity
