@@ -2,9 +2,12 @@ package com.demobank.accounts.Controller;
 
 import com.demobank.accounts.Constants.AccountsConstants;
 import com.demobank.accounts.DTO.CustomerDTO;
+import com.demobank.accounts.DTO.ErrorResponseDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
 import com.demobank.accounts.Service.IAccountsService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,7 +86,14 @@ public class AccountsController {
             ),
             @ApiResponse(
                     description = "HTTP Status INTERNAL_SERVER_ERROR",
-                    responseCode = "500"
+                    responseCode = "500",
+                    /* since error response dto is only sent from the
+                    exception handler, we have to give the reference like this so it shows up in
+                    the Swagger UI for API docs
+                     */
+                    content = @Content(
+                            schema = @Schema(implementation=ErrorResponseDTO.class)
+                    )
             )
     })
     @PutMapping("/update")
