@@ -23,12 +23,12 @@ public class CardsDTO {
     private String cardType;
 
     @Positive(message = "Total limit must be greater than 0")
-    private Long totalLimit;
+    private int totalLimit;
 
     @PositiveOrZero(message = "Amount used must be greater than or equal to 0")
-    private Long amountUsed;
+    private int amountUsed;
 
     @PositiveOrZero(message = "Available amount must be greater than or equal to 0")
-    private Long availableAmount;
+    private int availableAmount;
 
 }
