@@ -18,7 +18,7 @@ public class Cards extends BaseEntity {
     @Id
     @Column(name = "card_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int cardId;
+    private Integer cardId;
 
     @Column(name = "mobile_number")
     private Long mobileNumber;
