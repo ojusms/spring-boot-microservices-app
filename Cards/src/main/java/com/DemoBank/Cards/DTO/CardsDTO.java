@@ -13,7 +13,7 @@ public class CardsDTO {
 
     @NotEmpty(message = "Mobile number cannot be null or empty")
     @Pattern(regexp = "^$|[0-9]{10}", message = "mobileNumber must be 10 digits")
-    private Long mobileNumber;
+    private String mobileNumber;
 
     @NotEmpty(message = "Card number cannot be null or empty")
     @Pattern(regexp = "^$|[0-9]{12}", message = "cardNumber must be 12 digits")
