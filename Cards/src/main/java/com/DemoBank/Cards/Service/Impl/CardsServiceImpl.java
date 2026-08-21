@@ -1,8 +1,10 @@
 package com.DemoBank.Cards.Service.Impl;
 
 import com.DemoBank.Cards.Constants.CardsConstants;
+import com.DemoBank.Cards.DTO.CardsDTO;
 import com.DemoBank.Cards.Entity.Cards;
 import com.DemoBank.Cards.Exception.CardAlreadyExistsException;
+import com.DemoBank.Cards.Mapper.CardsMapper;
 import com.DemoBank.Cards.Repository.CardsRepository;
 import com.DemoBank.Cards.Service.ICardsService;
 import lombok.AllArgsConstructor;
@@ -45,5 +47,18 @@ public class CardsServiceImpl implements ICardsService {
         newCard.setCreatedAt(LocalDateTime.now());
         newCard.setCreatedBy("Anonymous");
         return newCard;
+    }
+
+    /**
+     *
+     * @param mobileNumber input mobile number of customer
+     * @return card details for given mobileNumber
+     */
+    @Override
+    public CardsDTO fetchCard(String mobileNumber) {
+        Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                // TO DO: create new ResourceNotFoundException and throw it below
+                () ->new RuntimeException("Card not found"));
+        return CardsMapper.mapToCardsDTO(cards, new CardsDTO());
     }
 }
