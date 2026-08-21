@@ -4,6 +4,7 @@ import com.DemoBank.Cards.Constants.CardsConstants;
 import com.DemoBank.Cards.DTO.CardsDTO;
 import com.DemoBank.Cards.Entity.Cards;
 import com.DemoBank.Cards.Exception.CardAlreadyExistsException;
+import com.DemoBank.Cards.Exception.ResourceNotFoundException;
 import com.DemoBank.Cards.Mapper.CardsMapper;
 import com.DemoBank.Cards.Repository.CardsRepository;
 import com.DemoBank.Cards.Service.ICardsService;
@@ -57,8 +58,7 @@ public class CardsServiceImpl implements ICardsService {
     @Override
     public CardsDTO fetchCard(String mobileNumber) {
         Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
-                // TO DO: create new ResourceNotFoundException and throw it below
-                () ->new RuntimeException("Card not found"));
+                () ->new ResourceNotFoundException("Card", "mobileNumber", mobileNumber));
         return CardsMapper.mapToCardsDTO(cards, new CardsDTO());
     }
 }
