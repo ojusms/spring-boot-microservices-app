@@ -2,6 +2,7 @@ package com.DemoBank.Cards.Service.Impl;
 
 import com.DemoBank.Cards.Constants.CardsConstants;
 import com.DemoBank.Cards.Entity.Cards;
+import com.DemoBank.Cards.Exception.CardAlreadyExistsException;
 import com.DemoBank.Cards.Repository.CardsRepository;
 import com.DemoBank.Cards.Service.ICardsService;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,7 @@ public class CardsServiceImpl implements ICardsService {
     public void createCard(String mobileNumber) {
         Optional<Cards> cards = cardsRepository.findByMobileNumber(mobileNumber);
         if (cards.isPresent()) {
-            throw new RuntimeException("Card already exists for this mobile number");
+            throw new CardAlreadyExistsException("Card already exists for mobile number "+mobileNumber);
         }
         cardsRepository.save(createNewCard(mobileNumber));
     }
