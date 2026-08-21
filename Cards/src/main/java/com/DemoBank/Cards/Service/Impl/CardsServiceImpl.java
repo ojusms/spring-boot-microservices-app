@@ -76,4 +76,18 @@ public class CardsServiceImpl implements ICardsService {
         cardsRepository.save(cards);
         return true;
     }
+
+    /**
+     *
+     * @param mobileNumber input mobile number of customer
+     * @return boolean value for success or fail
+     */
+    @Override
+    public boolean deleteCard(String mobileNumber) {
+        Cards cards = cardsRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Card","mobileNumber", mobileNumber)
+        );
+        cardsRepository.deleteById(cards.getCardId());
+        return true;
+    }
 }
