@@ -40,4 +40,20 @@ public class CardsController {
         CardsDTO cardsDTO = iCardsService.fetchCard(mobileNumber);
         return ResponseEntity.status(HttpStatus.OK).body(cardsDTO);
     }
+
+    @PutMapping("/update")
+    public  ResponseEntity<ResponseDTO> updateCardDetails(@Valid @RequestBody CardsDTO cardsDTO) {
+        boolean isUpdated = false;
+        isUpdated = iCardsService.updateCardDetails(cardsDTO);
+        if (isUpdated) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(CardsConstants.STATUS_200, CardsConstants.MESSAGE_200));
+        }
+        else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDTO(CardsConstants.STATUS_417, CardsConstants.MESSAGE_417_UPDATE));
+        }
+    }
 }

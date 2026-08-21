@@ -24,7 +24,7 @@ public class Cards extends BaseEntity {
     private String mobileNumber;
 
     @Column(name = "card_number")
-    private Long cardNumber;
+    private String cardNumber;
 
     @Column(name = "card_type")
     private String cardType;

@@ -39,8 +39,8 @@ public class CardsServiceImpl implements ICardsService {
         Cards newCard = new Cards();
         newCard.setMobileNumber(mobileNumber);
         // generate a random card number of 12 digits
-        long randomCardNumber = 10000000000L + new Random().nextInt(900000000);
-        newCard.setCardNumber(randomCardNumber);
+        long randomCardNumber = 100000000000L + new Random().nextInt(900000000);
+        newCard.setCardNumber(Long.toString(randomCardNumber));
         newCard.setCardType(CardsConstants.CREDIT_CARD);
         newCard.setTotalLimit(CardsConstants.NEW_CARD_LIMIT);
         newCard.setAmountUsed(0);
