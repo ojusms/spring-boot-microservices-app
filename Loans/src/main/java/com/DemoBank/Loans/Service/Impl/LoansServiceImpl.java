@@ -2,6 +2,7 @@ package com.DemoBank.Loans.Service.Impl;
 
 import com.DemoBank.Loans.Constants.LoansConstants;
 import com.DemoBank.Loans.Entity.Loans;
+import com.DemoBank.Loans.Exception.LoanAlreadyExistsException;
 import com.DemoBank.Loans.Repository.LoansRepository;
 import com.DemoBank.Loans.Service.ILoansService;
 import lombok.AllArgsConstructor;
@@ -24,8 +25,7 @@ public class LoansServiceImpl implements ILoansService {
     public void createLoan(String mobileNumber) {
         Optional<Loans> loans = loansRepository.findByMobileNumber(mobileNumber);
         if (loans.isPresent()) {
-            // TO DO: create new LoanAlreadyExistsException and throw it here
-            throw new RuntimeException("Loan already exists for given mobile number");
+            throw new LoanAlreadyExistsException("Loan already exists for mobileNumber: " + mobileNumber);
         }
         loansRepository.save(createNewLoan(mobileNumber));
     }
