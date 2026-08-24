@@ -7,6 +7,7 @@ import com.DemoBank.Loans.Service.ILoansService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
@@ -43,6 +44,8 @@ public class LoansServiceImpl implements ILoansService {
         newLoan.setTotalLoan(LoansConstants.NEW_LOAN_LIMIT);
         newLoan.setAmountPaid(0);
         newLoan.setOutstandingAmount(LoansConstants.NEW_LOAN_LIMIT);
+        newLoan.setCreatedAt(LocalDateTime.now());
+        newLoan.setCreatedBy("Loans_MS");
         return newLoan;
     }
 }
