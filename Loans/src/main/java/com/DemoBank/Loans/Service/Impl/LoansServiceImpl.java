@@ -1,8 +1,11 @@
 package com.DemoBank.Loans.Service.Impl;
 
 import com.DemoBank.Loans.Constants.LoansConstants;
+import com.DemoBank.Loans.DTO.LoansDTO;
 import com.DemoBank.Loans.Entity.Loans;
 import com.DemoBank.Loans.Exception.LoanAlreadyExistsException;
+import com.DemoBank.Loans.Exception.ResourceNotFoundException;
+import com.DemoBank.Loans.Mapper.LoansMapper;
 import com.DemoBank.Loans.Repository.LoansRepository;
 import com.DemoBank.Loans.Service.ILoansService;
 import lombok.AllArgsConstructor;
@@ -47,5 +50,19 @@ public class LoansServiceImpl implements ILoansService {
         newLoan.setCreatedAt(LocalDateTime.now());
         newLoan.setCreatedBy("Loans_MS");
         return newLoan;
+    }
+
+    /**
+     *
+     * @param mobileNumber input mobile number of customer
+     * @return loan details for a given mobile number
+     */
+    @Override
+    public LoansDTO fetchLoan(String mobileNumber) {
+        Loans loan = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Loan","mobileNumber",mobileNumber)
+        );
+
+        return LoansMapper.mapToLoansDTO(loan, new LoansDTO());
     }
 }

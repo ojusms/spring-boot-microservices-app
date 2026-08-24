@@ -13,7 +13,7 @@ public class LoansMapper {
      * @param loansDTO input LoansDTO object to map values and return
      * @return LoansDTO object mapped with values from input Loans object
      */
-    public LoansDTO mapToLoansDTO(Loans loans, LoansDTO loansDTO) {
+    public static LoansDTO mapToLoansDTO(Loans loans, LoansDTO loansDTO) {
         loansDTO.setLoanNumber(loans.getLoanNumber());
         loansDTO.setLoanType(loans.getLoanType());
         loansDTO.setMobileNumber(loans.getMobileNumber());
@@ -29,7 +29,7 @@ public class LoansMapper {
      * @param loans input Loans Object to map values and return
      * @return Loans object mapped with values from input LoansDTO object
      */
-    public Loans mapToLoans(LoansDTO loansDTO, Loans loans) {
+    public static Loans mapToLoans(LoansDTO loansDTO, Loans loans) {
         loans.setLoanNumber(loansDTO.getLoanNumber());
         loans.setLoanType(loansDTO.getLoanType());
         loans.setMobileNumber(loansDTO.getMobileNumber());
