@@ -58,4 +58,24 @@ public class LoansController {
                     .body(new ResponseDTO(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_UPDATE));
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<ResponseDTO> deleteLoan(
+            @Valid
+            @Pattern(regexp = "^$|[0-9]{10}",message = "mobileNumber must be 10 digits")
+            @RequestParam
+            String mobileNumber) {
+        boolean isDeleted = false;
+        isDeleted = iLoansService.deleteLoan(mobileNumber);
+        if(isDeleted) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new ResponseDTO(LoansConstants.STATUS_200, LoansConstants.MESSAGE_200));
+        }
+        else {
+            return ResponseEntity
+                    .status(HttpStatus.EXPECTATION_FAILED)
+                    .body(new ResponseDTO(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE));
+        }
+    }
 }
