@@ -69,8 +69,8 @@ public class CardsServiceImpl implements ICardsService {
      */
     @Override
     public boolean updateCardDetails(CardsDTO cardsDTO) {
-        Cards cards = cardsRepository.findByMobileNumber(cardsDTO.getMobileNumber()).orElseThrow(
-                () -> new ResourceNotFoundException("Card", "mobileNumber", cardsDTO.getMobileNumber())
+        Cards cards = cardsRepository.findByCardNumber(cardsDTO.getCardNumber()).orElseThrow(
+                () -> new ResourceNotFoundException("Card", "cardNumber", cardsDTO.getCardNumber())
         );
         CardsMapper.mapToCards(cardsDTO, cards);
         cardsRepository.save(cards);
