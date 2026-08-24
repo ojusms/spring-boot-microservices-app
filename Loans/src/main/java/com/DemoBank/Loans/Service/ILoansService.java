@@ -15,4 +15,11 @@ public interface ILoansService {
      * @return loan details for a given mobile number
      */
     LoansDTO fetchLoan(String mobileNumber);
+
+    /**
+     *
+     * @param loansDTO input loan details
+     * @return bolean value for success or fail
+     */
+    boolean updateLoan(LoansDTO loansDTO);
 }

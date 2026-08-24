@@ -65,4 +65,19 @@ public class LoansServiceImpl implements ILoansService {
 
         return LoansMapper.mapToLoansDTO(loan, new LoansDTO());
     }
+
+    /**
+     *
+     * @param loansDTO input loan details
+     * @return boolean value for success or fail
+     */
+    @Override
+    public boolean updateLoan(LoansDTO loansDTO) {
+        Loans loan = loansRepository.findByMobileNumber(loansDTO.getMobileNumber()).orElseThrow(
+                () -> new ResourceNotFoundException("Loan","mobileNumber", loansDTO.getMobileNumber())
+        );
+        LoansMapper.mapToLoans(loansDTO,loan);
+        loansRepository.save(loan);
+        return true;
+    }
 }
