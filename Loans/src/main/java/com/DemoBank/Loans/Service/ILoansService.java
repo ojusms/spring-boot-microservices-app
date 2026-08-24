@@ -22,4 +22,11 @@ public interface ILoansService {
      * @return bolean value for success or fail
      */
     boolean updateLoan(LoansDTO loansDTO);
+
+    /**
+     *
+     * @param mobileNumber input mobile number of customer
+     * @return boolean value for success or fail
+     */
+    boolean deleteLoan(String mobileNumber);
 }

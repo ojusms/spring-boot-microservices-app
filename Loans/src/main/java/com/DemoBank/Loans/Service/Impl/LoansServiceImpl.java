@@ -80,4 +80,19 @@ public class LoansServiceImpl implements ILoansService {
         loansRepository.save(loan);
         return true;
     }
+
+    /**
+     *
+     * @param mobileNumber input mobile number of customer
+     * @return boolean value for success or fail
+     */
+    @Override
+    public boolean deleteLoan(String mobileNumber) {
+        Loans loan = loansRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Loan","mobileNumber",mobileNumber)
+        );
+        loansRepository.deleteById(loan.getLoanId());
+        return true;
+    }
+
 }
