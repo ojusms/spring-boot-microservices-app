@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 @Tag(name = "REST APIs for Accounts service of DemoBank", // update swagger api docs
         description = "REST API docs of CREATE, READ, UPDATE, and DELETE operations for Accounts service of DemoBank")
@@ -32,6 +32,18 @@ public class AccountsController {
      constructor to class so Spring can do the autowiring since there is only 1 constructor
      */
     IAccountsService iAccountsService;
+
+    /* using @Value annotation to show how external property/confguration can be injected during runtime.
+    In this case the value is taken from the application.yml file. Since this field is not a Component,
+    SpringBoot cannot inject it via Constructor injection. So the Lombok @AllArgsConstructor must be removed
+    and a constructor for only IAccountsService field must be manually created.
+     */
+    @Value("${build.version}")
+    private String buildVersion;
+
+    public AccountsController(IAccountsService iAccountsService) {
+        this.iAccountsService = iAccountsService;
+    }
 
     // POST mapping available at "/api/create".
     // The data passed from HTTP request is bound to the method parameter of type CustomerDTO
@@ -145,5 +157,24 @@ public class AccountsController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResponseDTO(AccountsConstants.STATUS_500, AccountsConstants.MESSAGE_500));
         }
+    }
+
+    /*
+    GET mapping at "api/build-info" to return current build version of Accounts Service. To demonstrate use of
+    buildVersion field injected with property value
+     */
+    @Operation(
+            summary = "Build Info REST API",
+            description = "REST API to get build information of accounts service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 }
