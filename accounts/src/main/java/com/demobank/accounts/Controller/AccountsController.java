@@ -14,7 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,13 @@ public class AccountsController {
     public AccountsController(IAccountsService iAccountsService) {
         this.iAccountsService = iAccountsService;
     }
+
+    /*
+    Using a variable of Spring Core's Environment interface to show how properties/configs can be injected during
+    runtime. Here external properties from the system running the app are injected in the REST method below.
+     */
+    @Autowired
+    private Environment environment;
 
     // POST mapping available at "/api/create".
     // The data passed from HTTP request is bound to the method parameter of type CustomerDTO
@@ -176,5 +185,24 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
+    }
+
+    /*
+    GET mapping at "api/java-version" to return Java version of Accounts Service. To demonstrate use of
+    Environment interface variable for external property injection
+     */
+    @Operation(
+            summary = "Java Version REST API",
+            description = "REST API to get build Java Version of accounts service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));
     }
 }
