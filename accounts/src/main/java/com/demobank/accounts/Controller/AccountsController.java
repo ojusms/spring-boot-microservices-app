@@ -1,6 +1,7 @@
 package com.demobank.accounts.Controller;
 
 import com.demobank.accounts.Constants.AccountsConstants;
+import com.demobank.accounts.DTO.AccountsContactInfoDTO;
 import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.DTO.ErrorResponseDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
@@ -43,16 +44,24 @@ public class AccountsController {
     @Value("${build.version}")
     private String buildVersion;
 
-    public AccountsController(IAccountsService iAccountsService) {
-        this.iAccountsService = iAccountsService;
-    }
-
     /*
     Using a variable of Spring Core's Environment interface to show how properties/configs can be injected during
     runtime. Here external properties from the system running the app are injected in the REST method below.
+    Since it is managed by Spring, it can be constructor injected.
      */
-    @Autowired
-    private Environment environment;
+    private final Environment environment;
+
+    /*
+    Declaring a field of AccountsContactInfoDTO record to demonstrate how @ConfigurationProperties can be used
+    to inject values during runtime from external source. Since it is managed by Spring, it can be constructor injected.
+     */
+    private final AccountsContactInfoDTO accountsContactInfoDTO;
+
+    public AccountsController(IAccountsService iAccountsService, Environment environment, AccountsContactInfoDTO accountsContactInfoDTO) {
+        this.iAccountsService = iAccountsService;
+        this.environment = environment;
+        this.accountsContactInfoDTO = accountsContactInfoDTO;
+    }
 
     // POST mapping available at "/api/create".
     // The data passed from HTTP request is bound to the method parameter of type CustomerDTO
@@ -204,5 +213,24 @@ public class AccountsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    /*
+GET mapping at "api/contact-info" to return contact info of Accounts Service. To demonstrate use of
+@ConfigurationProperties of Spring for external property value injection
+ */
+    @Operation(
+            summary = "Contact Info REST API",
+            description = "REST API to get contact info of accounts service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/contact-info")
+    public ResponseEntity<AccountsContactInfoDTO> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(accountsContactInfoDTO);
     }
 }
