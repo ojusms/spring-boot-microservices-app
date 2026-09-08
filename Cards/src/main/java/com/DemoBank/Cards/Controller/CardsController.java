@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +32,14 @@ public class CardsController {
 
     private final String buildVersion;
 
-    public CardsController(ICardsService iCardsService, @Value("${build.version}") String buildVersion) {
+    private final Environment environment;
+
+    public CardsController(ICardsService iCardsService,
+                           @Value("${build.version}") String buildVersion,
+                           Environment environment) {
         this.iCardsService = iCardsService;
         this.buildVersion = buildVersion;
+        this.environment = environment;
     }
 
     @Operation(summary = "CREATE REST API",
@@ -152,5 +158,20 @@ public class CardsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
+    }
+
+    @Operation(
+            summary = "Java Version REST API",
+            description = "REST API to get build Java Version of cards service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/java-version")
+    public ResponseEntity<String> getJavaVersion() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(environment.getProperty("JAVA_HOME"));
     }
 }
