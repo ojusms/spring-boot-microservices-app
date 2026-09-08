@@ -1,6 +1,7 @@
 package com.DemoBank.Cards.Controller;
 
 import com.DemoBank.Cards.Constants.CardsConstants;
+import com.DemoBank.Cards.DTO.CardsContactInfoDTO;
 import com.DemoBank.Cards.DTO.CardsDTO;
 import com.DemoBank.Cards.DTO.ErrorResponseDTO;
 import com.DemoBank.Cards.DTO.ResponseDTO;
@@ -34,12 +35,14 @@ public class CardsController {
 
     private final Environment environment;
 
-    public CardsController(ICardsService iCardsService,
-                           @Value("${build.version}") String buildVersion,
-                           Environment environment) {
+    private final CardsContactInfoDTO cardsContactInfoDTO;
+
+    public CardsController(ICardsService iCardsService, @Value("${build.version}") String buildVersion,
+                           Environment environment, CardsContactInfoDTO cardsContactInfoDTO) {
         this.iCardsService = iCardsService;
         this.buildVersion = buildVersion;
         this.environment = environment;
+        this.cardsContactInfoDTO = cardsContactInfoDTO;
     }
 
     @Operation(summary = "CREATE REST API",
@@ -173,5 +176,20 @@ public class CardsController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    @Operation(
+            summary = "Contact Info REST API",
+            description = "REST API to get contact info of cards service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/contact-info")
+    public ResponseEntity<CardsContactInfoDTO> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(cardsContactInfoDTO);
     }
 }
