@@ -4,7 +4,6 @@ import com.DemoBank.Loans.Constants.LoansConstants;
 import com.DemoBank.Loans.DTO.ErrorResponseDTO;
 import com.DemoBank.Loans.DTO.LoansDTO;
 import com.DemoBank.Loans.DTO.ResponseDTO;
-import com.DemoBank.Loans.Entity.Loans;
 import com.DemoBank.Loans.Service.ILoansService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,7 +13,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +22,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api", produces = {MediaType.APPLICATION_JSON_VALUE})
-@AllArgsConstructor
 @Validated
 @Tag(name = "REST APIs for Loans service of DemoBank",
         description = "REST API docs of CREATE, READ, UPDATE, and DELETE operations for Loans service of DemoBank")
 public class LoansController {
 
-    private ILoansService iLoansService;
+    private final ILoansService iLoansService;
+
+    private final String buildVersion;
+
+    public LoansController(ILoansService iLoansService, @Value("${build.version}") String buildVersion) {
+        this.iLoansService = iLoansService;
+        this.buildVersion = buildVersion;
+    }
 
     @Operation(summary = "CREATE REST API",
             description = "REST API to create a new Loan for a Customer in DemoBank")
@@ -133,5 +138,20 @@ public class LoansController {
                     .status(HttpStatus.EXPECTATION_FAILED)
                     .body(new ResponseDTO(LoansConstants.STATUS_417, LoansConstants.MESSAGE_417_DELETE));
         }
+    }
+
+    @Operation(
+            summary = "Build Info REST API",
+            description = "REST API to get build information of loans service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/build-info")
+    public ResponseEntity<String> getBuildInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(buildVersion);
     }
 }
