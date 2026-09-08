@@ -1,0 +1,11 @@
+build:
+  version: "2.0"
+
+cards:
+  message: "Welcome to Cards QA service of DemoBank!"
+  contactInfo:
+    name: "Jack Dan - QA lead"
+    email: "jack@demobank.com"
+  onCallSupport:
+    - (666) 655-4321
+    - (666) 612-8765
