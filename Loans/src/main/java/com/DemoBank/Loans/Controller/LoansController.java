@@ -2,6 +2,7 @@ package com.DemoBank.Loans.Controller;
 
 import com.DemoBank.Loans.Constants.LoansConstants;
 import com.DemoBank.Loans.DTO.ErrorResponseDTO;
+import com.DemoBank.Loans.DTO.LoansContactInfoDTO;
 import com.DemoBank.Loans.DTO.LoansDTO;
 import com.DemoBank.Loans.DTO.ResponseDTO;
 import com.DemoBank.Loans.Service.ILoansService;
@@ -31,9 +32,13 @@ public class LoansController {
 
     private final String buildVersion;
 
-    public LoansController(ILoansService iLoansService, @Value("${build.version}") String buildVersion) {
+    private final LoansContactInfoDTO loansContactInfoDTO;
+
+    public LoansController(ILoansService iLoansService, @Value("${build.version}") String buildVersion,
+                           LoansContactInfoDTO loansContactInfoDTO) {
         this.iLoansService = iLoansService;
         this.buildVersion = buildVersion;
+        this.loansContactInfoDTO = loansContactInfoDTO;
     }
 
     @Operation(summary = "CREATE REST API",
@@ -153,5 +158,20 @@ public class LoansController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
+    }
+
+    @Operation(
+            summary = "Contact Info REST API",
+            description = "REST API to get contact information of loans service of DemoBank"
+    )
+    @ApiResponse(
+            description = "HTTP Status OK",
+            responseCode = "200"
+    )
+    @GetMapping("/contact-info")
+    public ResponseEntity<LoansContactInfoDTO> getContactInfo() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(loansContactInfoDTO);
     }
 }
