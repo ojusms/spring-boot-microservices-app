@@ -1,0 +1,32 @@
+# this serves as the config for "prod" profile. the default application.properties/yml file loaded and all
+# unique keys are loaded. When a new profile on top is activated, the values of repeated keys are overridden by
+# the loaded profile values and the unique keys from the profile are also loaded. This is why the configs on
+# port number and database connection are not repeated here.
+
+build:
+  version: "3.0"
+
+# adding some properties with the prefix 'accounts' to demonstrate @ConfigurationProperties of Spring Boot to inject
+# external values at runtime. Here 'message' is a String value. 'contactInfo' is a Map of <String, String> values,
+# and 'onCallSupport' is a List of <String> values.
+
+accounts:
+  message: "Welcome to Accounts QA service of DemoBank!"
+  contactInfo:
+    name: "Ren Ash - Product owner"
+    email: "ren@demobank.com"
+  onCallSupport:
+    - (456) 455-1234
+    - (456) 412-5678
+
+# this config explicitly tells spring to use the values from this file when the profile with below name is activated
+# either through base YAML file or command-line argument. This is necessary in the situation where Spring does not
+# do the automatic detection which happens when properties/YAML file name does not follow
+# the syntax "application-{profile}". For ex. if the name is "application_qa.yml", then Spring does not detect it
+# and import it and associate it with the profile named 'prod'.  Since this file follows the naming syntax, below
+# code is not needed. Included for demonstration when file name does not follow syntax.
+
+#spring:
+#  config:
+#    activate:
+#      on-profile: "prod"

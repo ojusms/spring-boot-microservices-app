@@ -19,6 +19,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  profiles:             # tell Spring which profile to activate. The name is derived and know to Spring
+    active: "prod"        # since the convention of 'application-{profileName}' was followed.
+ # config:                This property tells Spring to import the values in the files specified. This is needed
+ #   import:                        in case the naming convention of "application-{profile}" is not followed.
+ #     - "application_qa.yml"       Spring ignores .properties/yml files that do not follow the convention other
+ #     - "application_prod.yml"     than the default file.
 
 build:
   version: "1.0"
