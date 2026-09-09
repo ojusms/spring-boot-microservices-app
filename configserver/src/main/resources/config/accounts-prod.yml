@@ -2,7 +2,7 @@ build:
   version: "3.0"
 
 accounts:
-  message: "Welcome to Accounts QA service of DemoBank!"
+  message: "Welcome to Accounts Prod service of DemoBank!"
   contactInfo:
     name: "Ren Ash - Product owner"
     email: "ren@demobank.com"

@@ -20,11 +20,14 @@ spring:
       ddl-auto: update
     show-sql: true
   profiles:             # tell Spring which profile to activate. The name is derived and know to Spring
-    active: "prod"        # since the convention of 'application-{profileName}' was followed.
+    active: "prod"        # since the convention of 'application-{profileName}' was followed. Now it takes from configserver.
  # config:                This property tells Spring to import the values in the files specified. This is needed
  #   import:                        in case the naming convention of "application-{profile}" is not followed.
  #     - "application_qa.yml"       Spring ignores .properties/yml files that do not follow the convention other
  #     - "application_prod.yml"     than the default file.
+  config:
+    import: "configserver:http://localhost:8071/"  # telling accounts service to import configs from the configserver
+                                                   # at that location. The string 'configserver' is mandatory here irrespective of server application name.
 
 build:
   version: "1.0"
