@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Cards
+    name: Cards     # Apparently this needs to be the same case as the .yml filename in the configserver. Else it fails. Since configserver reads from local filesystem now, the OS does a case-insensitive match at the file level. But might fail in prod on a Linux container.
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -16,6 +16,8 @@ spring:
     show-sql: true
   profiles:
     active: "prod"
+  config:
+    import: "configserver:http://localhost:8071/"
 
 server:
   port: 9000
