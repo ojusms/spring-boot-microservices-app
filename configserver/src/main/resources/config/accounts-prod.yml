@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+accounts:
+  message: "Welcome to Accounts QA service of DemoBank!"
+  contactInfo:
+    name: "Ren Ash - Product owner"
+    email: "ren@demobank.com"
+  onCallSupport:
+    - (456) 455-1234
+    - (456) 412-5678

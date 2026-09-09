@@ -1,0 +1,11 @@
+build:
+  version: "2.0"
+
+accounts:
+  message: "Welcome to Accounts QA service of DemoBank!"
+  contactInfo:
+    name: "Smith Joe - QA lead"
+    email: "smith@demobank.com"
+  onCallSupport:
+    - (666) 655-1234
+    - (666) 612-5678

@@ -1,6 +1,13 @@
 spring:
   application:
     name: configserver
+  profiles:                  # Spring Cloud Config Server has an in-built profile called 'native' for use when
+    active: native           # loading configuration from filesystem (default is Git). Activating 'native' profile.
+  cloud:                     # This property specifies where to look to load the configurations from classpath
+    config:                  # for 'native' profile. This can be verified by running the app and checking
+      server:                # localhost:8071/{accounts/default, loans/dev, cards/qa, etc}
+        native:
+          search-locations: "classpath:/config"
 
 server:
   port: 8071

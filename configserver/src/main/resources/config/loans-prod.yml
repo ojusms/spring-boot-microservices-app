@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+loans:
+  message: "Welcome to Loans Prod service of DemoBank"
+  contactDetails:
+    name: "Pelias Sudhir - Product Owner"
+    email: "pelias@demobank.com"
+  onCallSupport:
+    - (723) 656-8709
+    - (156) 342-0956

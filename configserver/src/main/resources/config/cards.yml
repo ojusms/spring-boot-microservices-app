@@ -1,0 +1,11 @@
+build:
+  version: "1.0"
+
+cards:
+  message: "Welcome to Cards service of DemoBank!"
+  contactInfo:
+    name: "Jane Doe"
+    email: "jane@demobank.com"
+  onCallSupport:
+    - (555) 555-4321
+    - (555) 512-8765

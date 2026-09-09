@@ -1,0 +1,11 @@
+build:
+  version: "3.0"
+
+cards:
+  message: "Welcome to Cards Prod service of DemoBank!"
+  contactInfo:
+    name: "Sandra Phillip - Product owner"
+    email: "sandra@demobank.com"
+  onCallSupport:
+    - (444) 455-4321
+    - (444) 412-8765
