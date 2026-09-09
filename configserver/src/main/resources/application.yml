@@ -8,6 +8,7 @@ spring:
       server:                # localhost:8071/{accounts/default, loans/dev, cards/qa, etc}
         native:
           search-locations: "classpath:/config"
+         #search-locations: "file:{relative/absolute path of folder containing YAML files}" for importing from filesystem
 
 server:
   port: 8071
