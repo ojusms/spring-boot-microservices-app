@@ -28,6 +28,12 @@ spring:
   config:
     import: "configserver:http://localhost:8071/"  # telling accounts service to import configs from the configserver
                                                    # at that location. The string 'configserver' is mandatory here irrespective of server application name.
+  rabbitmq:              # define broker credentials for RabbitMQ (container running on port 5672) to use
+    host: localhost      # 'busrefresh' endpoint of actuator for Spring Cloud Bus. These are default values
+    port: 5672           # and do not need to be mentioned explicitly since Spring Cloud is already configured
+    username: guest      # Instead of invoking 'actuator/refresh' for each service, 'actuator/busrefresh' can
+    password: guest      # be invoked for one service and all nodes registered with MQ will refresh configs from configserver
+                         # via Spring Cloud Bus
 
 build:
   version: "1.0"
