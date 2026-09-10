@@ -2,7 +2,7 @@ build:
   version: "3.0"
 
 loans:
-  message: "Welcome to Loans Prod service of DemoBank"
+  message: "Welcome to Loans Prod service of DemoBank.Testing Spring Cloud Bus"
   contactDetails:
     name: "Pelias Sudhir - Product Owner"
     email: "pelias@demobank.com"
