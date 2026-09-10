@@ -33,3 +33,9 @@ cards:
   onCallSupport:
     - (555) 555-4321
     - (555) 512-8765
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
