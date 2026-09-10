@@ -2,7 +2,7 @@ build:
   version: "3.0"
 
 cards:
-  message: "Welcome to Cards Prod service of DemoBank!"
+  message: "Welcome to Cards Prod service of DemoBank! Testing Spring Cloud Bus"
   contactInfo:
     name: "Sandra Phillip - Product owner"
     email: "sandra@demobank.com"
