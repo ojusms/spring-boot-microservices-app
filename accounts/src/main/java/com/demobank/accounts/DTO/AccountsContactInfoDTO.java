@@ -1,5 +1,7 @@
 package com.demobank.accounts.DTO;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.List;
@@ -11,6 +13,13 @@ Record is a type of class introduced in Java 17 that is meant to store info whic
 It has only getter methods and no setter methods. Passing field names and types as parameters is enough,
 Java compiler automatically created private final fields with the same names and getter methods without 'get' prefix.
  */
+/*
+Updating record to class to use Setter methods to update fields from configserver when app is running.
+ */
 @ConfigurationProperties(prefix = "accounts")
-public record AccountsContactInfoDTO(String message, Map<String, String> contactInfo, List<String> onCallSupport) {
+@Getter @Setter
+public class AccountsContactInfoDTO {
+    private String message;
+    private Map<String, String> contactInfo;
+    private List<String> onCallSupport;
 }
