@@ -3,7 +3,7 @@ build:
 
 loans:
   message: "Welcome to Loans service of DemoBank"
-  contactDetails:
+  contactInfo:
     name: "Amaal Grega - Developer"
     email: "amaal@demobank.com"
   onCallSupport:

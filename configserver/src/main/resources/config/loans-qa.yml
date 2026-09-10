@@ -3,7 +3,7 @@ build:
 
 loans:
   message: "Welcome to Loans QA service of DemoBank"
-  contactDetails:
+  contactInfo:
     name: "Cyrano Marita - QA Lead"
     email: "cyrano@demobank.com"
   onCallSupport:

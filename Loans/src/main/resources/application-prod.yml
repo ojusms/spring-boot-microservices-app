@@ -8,7 +8,7 @@ build:
 
 loans:
   message: "Welcome to Loans Prod service of DemoBank"
-  contactDetails:
+  contactInfo:
     name: "Pelias Sudhir - Product Owner"
     email: "pelias@demobank.com"
   onCallSupport:
