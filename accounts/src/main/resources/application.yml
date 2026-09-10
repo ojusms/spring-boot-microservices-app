@@ -44,3 +44,10 @@ accounts:
   onCallSupport:
     - (555) 555-1234
     - (555) 512-5678
+
+# expose all management related endpoints support by Spring Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
