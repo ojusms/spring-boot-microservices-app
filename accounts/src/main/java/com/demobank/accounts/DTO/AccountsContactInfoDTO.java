@@ -14,7 +14,8 @@ It has only getter methods and no setter methods. Passing field names and types 
 Java compiler automatically created private final fields with the same names and getter methods without 'get' prefix.
  */
 /*
-Updating record to class to use Setter methods to update fields from configserver when app is running.
+Updating record to class to use Setter methods to update fields from configserver when app is running
+by making a POST call to endpoint '/actuator/refresh'
  */
 @ConfigurationProperties(prefix = "accounts")
 @Getter @Setter
