@@ -2,20 +2,21 @@ spring:
   application:
     name: configserver
   profiles:                  # Spring Cloud Config Server has an in-built profile called 'native' for use when
-    active: native           # loading configuration from filesystem (default is Git). Activating 'native' profile.
-    #active: git             # When specifying Git as the source of config info
+    #active: native           # loading configuration from filesystem (default is Git). Activating 'native' profile.
+    active: git             # When specifying Git as the source of config info
   cloud:                     # This property specifies where to look to load the configurations from classpath
     config:                  # for 'native' profile. This can be verified by running the app and checking
       server:                # localhost:8071/{accounts/default, loans/dev, cards/qa, etc}
-        native:
-          search-locations: "classpath:/config"
+        #native:
+        #  search-locations: "classpath:/config"
          #search-locations: "file:{relative/absolute path of folder containing YAML files}" for importing from filesystem
-        #git:                     # when using Git profile. Check official Spring Cloud docs for username/pass auth and more info.
-        #  uri: "{github url}"
-        #  default-label: main    # specifying the branch on Git repo
-        #  timeout: 5             # timeout in seconds
-        #  clone-on-start: true   # clone repo on start instead of on first request
-        #  force-pull: true       # forces a pull from Git if there is a change in the local repo after cloning
+        git:                     # when using Git profile. Check official Spring Cloud docs for username/pass auth and more info.
+          uri: "https://github.com/ojusms/spring-boot-microservices-app.git"
+          search-paths: "configserver/src/main/resources/config"  # specifying path(s) to look for properties/YAML files. Looks in root directory by default.
+          default-label: main    # specifying the branch on Git repo
+          timeout: 5             # timeout in seconds
+          clone-on-start: true   # clone repo on start (eager) instead of on first request (lazily) which is default behavior. Stores in the OS temp folder. Can be specified where to store with 'basedir' property.
+          force-pull: true       # forces a pull from Git if there is a change in the local repo after cloning
 
 #encrypt:                     # This can be used to encrypt the passwords or sensitive plaintext when storing in a Git repo.
 # key: "{encryptionKey}"      # The field value should appear as "{cipher}cipherText" on the Git repo.
