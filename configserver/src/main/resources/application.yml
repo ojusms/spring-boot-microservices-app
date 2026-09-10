@@ -17,5 +17,11 @@ spring:
         #  clone-on-start: true   # clone repo on start instead of on first request
         #  force-pull: true       # forces a pull from Git if there is a change in the local repo after cloning
 
+#encrypt:                     # This can be used to encrypt the passwords or sensitive plaintext when storing in a Git repo.
+# key: "{encryptionKey}"      # The field value should appear as "{cipher}cipherText" on the Git repo.
+                              # It is the server manager/admin responsibility to ensure values are stored as cipherText.
+                              # The encyptionKey is usually not stored in the config server application src but injected externally.
+                              # The config server exposes /encrypt and /decrypt endpoints to get the respective values.
+
 server:
   port: 8071
