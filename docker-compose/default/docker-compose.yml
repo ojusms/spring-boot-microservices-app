@@ -1,0 +1,65 @@
+# adding a separate docker compose file for each profile to handle running of configserver + services for that profile.
+services:
+  configserver:                         # adding configserver as a service with the same name to run in the
+    image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
+    container_name: "configserver-ms"   # by name since each container has its own isolated namespace/loopback
+    ports:                              # for 'localhost'. If accounts container is running outside a network,
+      - "8071:8071"                     # it won't be able to find configserver at localhost:8071 since accounts
+    deploy:                             # container has its own 'localhost' and nothing is listening on 8071.
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - demobank
+
+  accounts:
+    image: "demobank/accounts:s6"
+    container_name: "accounts-ms"
+    ports:
+      - "8080:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - demobank
+    environment:                       # defining environment variables to allow comms with configserver as mentioned above
+      SPRING_APPLICATION_NAME: accounts
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
+
+  cards:
+    image: "demobank/cards:s6"
+    container_name: "cards-ms"
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - demobank
+    environment:
+      SPRING_APPLICATION_NAME: cards
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
+
+  loans:
+    image: "demobank/loans:s6"
+    container_name: "loans-ms"
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - demobank
+    environment:
+      SPRING_APPLICATION_NAME: loans
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+      SPRING_PROFILES_ACTIVE: default
+
+networks:
+  demobank:
+    driver: "bridge"
