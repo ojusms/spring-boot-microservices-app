@@ -27,7 +27,7 @@ management:             # enabling actuator health endpoints for liveness and re
   endpoints:            # the configserver container in a Docker network prior to routing traffic
     web:
       exposure:
-        include: *
+        include: "*"
   health:
     readiness-state:
       enabled: true

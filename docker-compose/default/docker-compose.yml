@@ -1,5 +1,20 @@
 # adding a separate docker compose file for each profile to handle running of configserver + services for that profile.
 services:
+  rabbit:                               # define a service named 'rabbit' to perform a health check on rabbitmq
+    image: rabbitmq:4-management        # container since it is a dependency for configserver container. This
+    hostname: rabbitmq                  # also runs in the same network as the rest to be accessible to each other
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+     - demobank
+
   configserver:                         # adding configserver as a service with the same name to run in the
     image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
     container_name: "configserver-ms"   # by name since each container has its own isolated namespace/loopback
@@ -9,6 +24,15 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:               # add a dependency on configserver to start only when rabbitmq container is healthy
+      rabbit:
+        condition: service_healthy
+    healthcheck:              # add a health check with instruction on what to test for. This one checks for readiness of configserver container
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness |grep UP || exit 1"
+      interval: 10s           # instruct the health check to start only 10s after the container starts, to perform
+      retries: 10             # up to 10 retries, with an interval of 10s between each. If the check takes longer
+      timeout: 5s             # than 5s from the time it started, it is considered to have failed.
+      start_period: 10s
     networks:
       - demobank
 
@@ -21,6 +45,9 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:                       # add a dependency on configserver service to be healthy prior to starting
+      configserver:
+        condition: service_healthy
     networks:
       - demobank
     environment:                       # defining environment variables to allow comms with configserver as mentioned above
@@ -37,6 +64,9 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
     networks:
       - demobank
     environment:
@@ -53,6 +83,9 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      configserver:
+        condition: service_healthy
     networks:
       - demobank
     environment:
