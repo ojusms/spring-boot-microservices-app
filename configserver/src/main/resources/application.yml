@@ -23,20 +23,20 @@ spring:
     username: guest
     password: guest
 
-management:             # enabling actuator health endpoints for liveness and readiness probes for running
-  endpoints:            # the configserver container in a Docker network prior to routing traffic
+management:
+  endpoints:
     web:
       exposure:
         include: "*"
-  health:
-    readiness-state:
+  health:               # turn on Spring Boot's tracking of these internal states (liveness and readiness)
+    readiness-state:    # done for running the configserver container in a Docker network prior to routing traffic
       enabled: true
     liveness-state:
       enabled: true
-  endpoint:
-    health:
-      probes:
-        enables: true
+  endpoint:             # this singular 'endpoint' property is used to modify specific endpoint properties.
+    health:             # the plural 'endpoints' property with 'web' below is used to expose endpoints under actuator over HTTP
+      probes:           # in this case, health endpoint of actuator is modified to make /readiness and /liveness accessible.
+        enabled: true
 
 #encrypt:                     # This can be used to encrypt the passwords or sensitive plaintext when storing in a Git repo.
 # key: "{encryptionKey}"      # The field value should appear as "{cipher}cipherText" on the Git repo.
