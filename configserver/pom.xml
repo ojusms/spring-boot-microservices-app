@@ -11,6 +11,7 @@
 	<groupId>com.demobank</groupId>
 	<artifactId>configserver</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name/>
 	<description/>
 	<url/>
@@ -63,6 +64,15 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!-- In the latest versions of JDK, curl and sh are not included in images (distroless) to reduce size
+				 and hence using curl to perform health check for configserver in docker-compose fails.
+				 Using Paketo and specifying jammy full base image to include curl for configserver. Other services can use Jib as usual -->
+				<configuration>
+					<image>
+						<name>demobank/${project.artifactId}:s6</name>
+						<builder>paketobuildpacks/builder-jammy-full</builder>
+					</image>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>

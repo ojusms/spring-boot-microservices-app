@@ -4,8 +4,8 @@ services:
     image: rabbitmq:4-management        # container since it is a dependency for configserver container. This
     hostname: rabbitmq                  # also runs in the same network as the rest to be accessible to each other
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     healthcheck:
       test: rabbitmq-diagnostics check_port_connectivity
       interval: 10s
@@ -27,7 +27,7 @@ services:
       rabbit:
         condition: service_healthy
     healthcheck:              # add a health check with instruction on what to test for. This one checks for readiness of configserver container
-      test: "curl --fail --silent localhost:8071/actuator/health/readiness |grep UP || exit 1"
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s           # instruct the health check to start only 10s after the container starts, to perform
       retries: 10             # up to 10 retries, with an interval of 10s between each. If the check takes longer
       timeout: 5s             # than 5s from the time it started, it is considered to have failed.
@@ -46,7 +46,10 @@ services:
         limits:
           memory: 700m
     environment:                       # defining environment variables to allow comms with configserver as mentioned above
-      SPRING_APPLICATION_NAME: accounts
+      SPRING_APPLICATION_NAME: "accounts"
+    depends_on:
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -58,6 +61,9 @@ services:
       - "9000:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
+    depends_on:
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
@@ -69,6 +75,9 @@ services:
       - "8090:8090"
     environment:
       SPRING_APPLICATION_NAME: loans
+    depends_on:
+      configserver:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
