@@ -6,7 +6,7 @@ server:
 spring:
   application:
     name: accounts
-  datasource:
+  datasource:               # to update this with MySQL for each service running in a container. Created by ' docker run -p 3306:3306 --name accountsdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=accountsdb -d mysql '. replace first 3306 with 7 and 8 for other services, container name with --name, and database name being passed via environment vriable with -e. Interact via SQLectron Client.
     url: jdbc:h2:mem:testdb
     driverClassname: org.h2.Driver
     username: sa
@@ -29,11 +29,11 @@ spring:
     import: "optional:configserver:http://localhost:8071/"  # adding 'optional' since this value does not get overridden when another value is passed as an environment variable. Apparently this one property in spring does not use the highest precedence value, but evaluates are values for spring.config.import. Since this is running in a container, it cannot reach configserver via localhost hence optional.
       # telling accounts service to import configs from the configserver
                                                    # at that location. The string 'configserver' is mandatory here irrespective of server application name.
-  rabbitmq:              # define broker credentials for RabbitMQ (container running on port 5672) to use
-    host: localhost      # 'busrefresh' endpoint of actuator for Spring Cloud Bus. These are default values
-    port: 5672           # and do not need to be mentioned explicitly since Spring Cloud is already configured
-    username: guest      # Instead of invoking 'actuator/refresh' for each service, 'actuator/busrefresh' can
-    password: guest      # be invoked for one service and all nodes registered with MQ will refresh configs from configserver
+#  rabbitmq:              # define broker credentials for RabbitMQ (container running on port 5672) to use. Commenting out since not used going forward.
+#    host: localhost      # 'busrefresh' endpoint of actuator for Spring Cloud Bus. These are default values
+#    port: 5672           # and do not need to be mentioned explicitly since Spring Cloud is already configured
+#    username: guest      # Instead of invoking 'actuator/refresh' for each service, 'actuator/busrefresh' can
+#    password: guest      # be invoked for one service and all nodes registered with MQ will refresh configs from configserver
                          # via Spring Cloud Bus
 
 build:

@@ -17,11 +17,6 @@ spring:
           timeout: 5             # timeout in seconds
           clone-on-start: true   # clone repo on start (eager) instead of on first request (lazily) which is default behavior. Stores in the OS temp folder. Can be specified where to store with 'basedir' property.
           force-pull: true       # forces a pull from Git if there is a change in the local repo after cloning
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
 
 management:
   endpoints:
