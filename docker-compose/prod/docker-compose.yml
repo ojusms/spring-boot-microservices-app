@@ -1,20 +1,34 @@
 # adding a separate docker compose file for each profile to handle running of configserver + services for that profile.
 services:
-  rabbit:                               # define a service named 'rabbit' to perform a health check on rabbitmq
-    image: rabbitmq:4-management        # container since it is a dependency for configserver container. This
-    hostname: rabbitmq                  # also runs in the same network as the rest to be accessible to each other
+  accountsdb:                            # creating a service for the new MySQL container for Accounts service and so on
+    container_name: accountsdb
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 5s
-    extends:                            # importing common config from common-config.yml file with 'extends'
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: accountsdb
+    extends:
       file: common-config.yml
-      service: network-deploy-service
+      service: microservice-db-config
+
+  cardsdb:
+    container_name: cardsdb
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: cardsdb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
+
+  loansdb:
+    container_name: loansdb
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: loansdb
+    extends:
+      file: common-config.yml
+      service: microservice-db-config
 
   configserver:                         # adding configserver as a service with the same name to run in the
     image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
@@ -23,9 +37,7 @@ services:
       - "8071:8071"                     # it won't be able to find configserver at localhost:8071 since accounts
                                         # container has its own 'localhost' and nothing is listening on 8071.
 
-    depends_on:               # add a dependency on configserver to start only when rabbitmq container is healthy
-      rabbit:
-        condition: service_healthy
+
     healthcheck:              # add a health check with instruction on what to test for. This one checks for readiness of configserver container
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s           # instruct the health check to start only 10s after the container starts, to perform
@@ -37,7 +49,7 @@ services:
       service: microservice-base-config
 
   accounts:
-    image: "demobank/accounts:s6"
+    image: "demobank/accounts:s7"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -47,36 +59,45 @@ services:
           memory: 700m
     environment:                       # defining environment variables to allow comms with configserver as mentioned above
       SPRING_APPLICATION_NAME: "accounts"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
     depends_on:
       configserver:
+        condition: service_healthy
+      accountsdb:
         condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
 
   cards:
-    image: "demobank/cards:s6"
+    image: "demobank/cards:s7"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
+      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"
     depends_on:
       configserver:
+        condition: service_healthy
+      cardsdb:
         condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-configserver-config
 
   loans:
-    image: "demobank/loans:s6"
+    image: "demobank/loans:s7"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
     environment:
       SPRING_APPLICATION_NAME: loans
+      SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
     depends_on:
       configserver:
+        condition: service_healthy
+      loansdb:
         condition: service_healthy
     extends:
       file: common-config.yml
