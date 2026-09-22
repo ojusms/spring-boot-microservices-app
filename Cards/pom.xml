@@ -126,7 +126,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>demobank/cards:s6</image>
+						<image>demobank/cards:s7</image>
 					</to>
 				</configuration>
 			</plugin>

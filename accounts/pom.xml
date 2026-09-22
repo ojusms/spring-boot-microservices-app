@@ -127,7 +127,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>demobank/accounts:s6</image>
+						<image>demobank/accounts:s7</image>
 					</to>
 				</configuration>
 			</plugin>
