@@ -1,3 +1,20 @@
 spring:
   application:
-  name: eurekaserver
+    name: eurekaserver
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:               # turn on Spring Boot's tracking of these internal states (liveness and readiness)
+    readiness-state:    # done for running the container in a Docker network prior to routing traffic
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:             # this singular 'endpoint' property is used to modify specific endpoint properties.
+    health:             # the plural 'endpoints' property with 'web' below is used to expose endpoints under actuator over HTTP
+      probes:           # in this case, health endpoint of actuator is modified to make /readiness and /liveness accessible.
+        enabled: true
