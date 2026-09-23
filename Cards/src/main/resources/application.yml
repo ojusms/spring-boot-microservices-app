@@ -2,14 +2,18 @@ spring:
   application:
     name: Cards     # Apparently this needs to be the same case as the .yml filename in the configserver. Else it fails. Since configserver reads from local filesystem now, the OS does a case-insensitive match at the file level. But might fail in prod on a Linux container.
   datasource:
-    url: jdbc:mysql://localhost:3307/cardsdb
-    username: root
-    password: root
+    url: jdbc:h2:mem:testdb
+    driverClassname: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
-  sql:
-    init:
-      mode: always
   profiles:
     active: "prod"
   config:
