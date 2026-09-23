@@ -1,0 +1,11 @@
+server:
+  port: 8070                    # overriding default value of 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    fetchRegistry: false        # overriding default value of 'true' since the Server is not to fetch the info in the registry
+    registerWithEureka: false   # overriding default value of 'true' since Server is not to register itself in itself (like a microservice instance would)
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
