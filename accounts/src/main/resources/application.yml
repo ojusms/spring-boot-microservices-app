@@ -6,15 +6,19 @@ server:
 spring:
   application:
     name: accounts
-  datasource:               # updated with MySQL, which will be running in a container for each service. Created by ' docker run -p 3306:3306 --name accountsdb -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=accountsdb -d mysql '. replace first 3306 with 7 and 8 for other services, container name with --name, and database name being passed via environment vriable with -e. Interact via SQLectron Client.
-    url: jdbc:mysql://localhost:3306/accountsdb
-    username: root
-    password: root
+  datasource:               # reverting to in-memory H2 database from MySQL running in containers to reduce number of containers
+    url: jdbc:h2:mem:testdb
+    driverClassname: org.h2.Driver
+    username: sa
+    password: ''
+  h2:
+    console:
+      enabled: true
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
     show-sql: true
-  sql:
-    init:
-      mode: always        # telling spring boot to initialize DB schema tables from schema.sql in MySQL container. Not done by default for MySql.
   profiles:             # tell Spring which profile to activate. The name is derived and know to Spring
     active: "prod"        # since the convention of 'application-{profileName}' was followed. Now it takes from configserver.
  # config:                This property tells Spring to import the values in the files specified. This is needed
