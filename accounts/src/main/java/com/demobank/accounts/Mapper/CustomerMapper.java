@@ -1,6 +1,7 @@
 package com.demobank.accounts.Mapper;
 
 import com.demobank.accounts.DTO.CustomerDTO;
+import com.demobank.accounts.DTO.CustomerDetailsDTO;
 import com.demobank.accounts.Entity.Customer;
 // can use 3rd party libraries like ModelMapper and MapStruct also in place of writing out below functions
 
@@ -32,5 +33,18 @@ public class CustomerMapper {
         customer.setEmail(customerDTO.getEmail());
         customer.setMobileNumber(customerDTO.getMobileNumber());
         return customer;
+    }
+
+    /**
+     * take info from Customer object and populate into CustomerDetailsDTO object
+     * @param customer Customer Object
+     * @param customerDetailsDTO CustomerDetailsDTO Object
+     * @return {@link CustomerDetailsDTO} Object
+     */
+    public static CustomerDetailsDTO mapToCustomerDetailsDTO(Customer customer, CustomerDetailsDTO customerDetailsDTO) {
+        customerDetailsDTO.setName(customer.getName());
+        customerDetailsDTO.setEmail(customer.getEmail());
+        customerDetailsDTO.setMobileNumber(customer.getMobileNumber());
+        return customerDetailsDTO;
     }
 }
