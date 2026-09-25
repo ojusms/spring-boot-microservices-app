@@ -1,10 +1,13 @@
 package com.demobank.accounts.Controller;
 
 import com.demobank.accounts.DTO.CustomerDetailsDTO;
+import com.demobank.accounts.Service.ICustomersService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -18,7 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Validated
 @Tag(name = "REST APIs for Customer details of Accounts service of DemoBank", // update swagger api docs
         description = "REST API docs to fetch Customer details of DemoBank")
+@AllArgsConstructor
 public class CustomerController {
+
+    private final ICustomersService iCustomersService;
 
     /* GET mapping at "/api/fetchCustomerDetails" to find and return a customer's details by mobile number
      mobileNumber method argument is mapped to the request query parameter in the url
@@ -36,6 +42,7 @@ public class CustomerController {
             @RequestParam
             @Pattern(regexp = "^$|[0-9]{10}" , message = "Mobile number must be 10 digits")
             String mobileNumber) {
-        return null;
+        CustomerDetailsDTO customerDetailsDTO = iCustomersService.fetchCustomerDetails(mobileNumber);
+        return ResponseEntity.status(HttpStatus.OK).body(customerDetailsDTO);
     }
 }

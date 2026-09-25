@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /*
 Annotate the interface as a FeignClient for component scanning and autowiring.
 The 'value'/'name' parameter value has to be the logical name of the service registered in Eureka, being invoked.
-Spring.application.name of that service. "Cards" in this case. This name gets resolved to the 'host:port' part in
+Spring.application.name of that service. "Cards" in this case. Eureka Server is case-insensitive.
+This name gets resolved to the 'host:port' part in
 Spring Cloud LoadBalancer querying Eureka's registry. Feign talks to SB LoadBalancer which talks to Eureka.
 Changing Eureka Server to any other Service Registry like Consul or Kubernetes does not require any modification to
 FeignClient interface.
