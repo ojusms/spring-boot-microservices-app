@@ -49,6 +49,7 @@ management:
 eureka:
   instance:
     preferIpAddress: true
+  client:
     fetchRegistry: true
     registerWithEureka: true
     serviceUrl:
@@ -56,6 +57,6 @@ eureka:
 
 info:
   app:
-    name: accounts
-    description: Accounts service of Demo Bank application
+    name: cards
+    description: Cards service of Demo Bank application
     version: 1.0.0

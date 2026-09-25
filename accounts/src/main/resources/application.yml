@@ -78,6 +78,6 @@ eureka:
 # some properties that are displayed in the Eureka Server dashboard (localhost:8070/) for this service
 info:
   app:
-    name: accounts
+    name: accounts            # this value is displayed as part of JSON on Eureka Dashboard. The name in the URL for the same page on Eureka server is taken from Spring.Application.Name property.
     description: Accounts service of Demo Bank application
     version: 1.0.0
