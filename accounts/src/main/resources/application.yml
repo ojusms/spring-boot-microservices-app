@@ -60,8 +60,8 @@ management:
         include: "*"
   endpoint:
     shutdown:
-      access: unrestricted    # enable endpoint to let the application be gracefully shutdown.
-  info:
+      access: unrestricted    # enable endpoint to let the application be gracefully shutdown. POST call to http://localhost:8080/actuator/shutdown.
+  info:                       # In older versions of IntelliJ IDEA, the 'stop' button for a running app would perform a 'forceful kill' which gives no time for shutdown (needed to de-register with Eureka Server and other things). But modern versions of IDE send a 'soft-kill signal' first which initiates graceful shutdown
     env:
       enabled: true           # enable exposure of environment properties through Spring Boot Actuator's info endpoint
 
