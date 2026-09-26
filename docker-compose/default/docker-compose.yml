@@ -17,35 +17,36 @@ services:
 #      file: common-config.yml
 #      service: network-deploy-service
 
-  accountsdb:                            # creating a service for the new MySQL container for Accounts service and so on
-    container_name: accountsdb
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_DATABASE: accountsdb
-    extends:
-      file: common-config.yml
-      service: microservice-db-config
-
-  cardsdb:
-    container_name: cardsdb
-    ports:
-      - "3308:3306"
-    environment:
-      MYSQL_DATABASE: cardsdb
-    extends:
-      file: common-config.yml
-      service: microservice-db-config
-
-  loansdb:
-    container_name: loansdb
-    ports:
-      - "3307:3306"
-    environment:
-      MYSQL_DATABASE: loansdb
-    extends:
-      file: common-config.yml
-      service: microservice-db-config
+# Commeting out MySQL containers for each service as they have been moved back to H2 database.
+#  accountsdb:                            # creating a service for the new MySQL container for Accounts service and so on
+#    container_name: accountsdb
+#    ports:
+#      - "3306:3306"
+#    environment:
+#      MYSQL_DATABASE: accountsdb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
+#
+#  cardsdb:
+#    container_name: cardsdb
+#    ports:
+#      - "3308:3306"
+#    environment:
+#      MYSQL_DATABASE: cardsdb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
+#
+#  loansdb:
+#    container_name: loansdb
+#    ports:
+#      - "3307:3306"
+#    environment:
+#      MYSQL_DATABASE: loansdb
+#    extends:
+#      file: common-config.yml
+#      service: microservice-db-config
 
   configserver:                         # adding configserver as a service with the same name to run in the
     image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
@@ -64,8 +65,24 @@ services:
       file: common-config.yml
       service: microservice-base-config
 
+  eurekaserver:               # adding eurekaserver as a service with the same name to run in the
+    image: "demobank/eurekaserver:s8"
+    container_name: "eurekaserver-ms"
+    ports:
+      - "8070:8070"
+    healthcheck:              # same health check as configserver but using the port number for eurekaserver
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      retries: 10
+      timeout: 5s
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+
   accounts:
-    image: "demobank/accounts:s7"
+    image: "demobank/accounts:s8"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -75,49 +92,34 @@ services:
           memory: 700m
     environment:                       # defining environment variables to allow comms with configserver as mentioned above
       SPRING_APPLICATION_NAME: "accounts"
-      SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      accountsdb:
-        condition: service_healthy
+      #SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb" not needed after moving back to H2 db
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   cards:
-    image: "demobank/cards:s7"
+    image: "demobank/cards:s8"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
-      SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"  # mysql listens on intenal container port 3306 and not exposed host port
-    depends_on:
-      configserver:
-        condition: service_healthy
-      cardsdb:
-        condition: service_healthy
+      #SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"  # mysql listens on intenal container port 3306 and not exposed host port
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
   loans:
-    image: "demobank/loans:s7"
+    image: "demobank/loans:s8"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
     environment:
       SPRING_APPLICATION_NAME: loans
-      SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
-    depends_on:
-      configserver:
-        condition: service_healthy
-      loansdb:
-        condition: service_healthy
+      #SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eurekaserver-config
 
 networks:
   demobank:
