@@ -5,9 +5,11 @@ spring:
     import: optional:configserver:http://localhost:8071/
   cloud:                  # enabling GatewayServer to create routes based on services registered in a
     gateway:              # DiscoveryClient compatible service registry implementation (Netflix Eureka here)
-      discovery:
-        locator:
-          enabled: true
+      server:             # property is spring.cloud.gateway.server.webflux.discovery.locator=true
+        webflux:          # and not what is in Spring Cloud Gateway 5.0.3 docs
+          discovery:      # the routes for services are available at http://localhot:8072/actuator/gateway/routes
+            locator:      # API calls to services via gateway can be made at http://localhost:8072/service-name/api-path
+              enabled: true      # ex 'http://localhost:8072/ACCOUNTS/api/create'. Service names are same as seen in Eureka dashboard
 
 info:
   app:
