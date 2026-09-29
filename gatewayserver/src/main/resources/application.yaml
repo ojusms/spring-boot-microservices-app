@@ -3,6 +3,11 @@ spring:
     name: gatewayserver
   config:
     import: optional:configserver:http://localhost:8071/
+  cloud:                  # enabling GatewayServer to create routes based on services registered in a
+    gateway:              # DiscoveryClient compatible service registry implementation (Netflix Eureka here)
+      discovery:
+        locator:
+          enabled: true
 
 info:
   app:
