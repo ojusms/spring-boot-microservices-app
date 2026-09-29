@@ -1,3 +1,25 @@
 spring:
   application:
     name: gatewayserver
+  config:
+    import: optional:configserver:http://localhost:8071/
+
+info:
+  app:
+    name: gatewayserver
+    description: Gateway server of Demo Bank application
+    version: 1.0.0
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:                  # enable actuator endpoint to monitor and interact with Spring Cloud Gateway project
+    gateway:
+      access: unrestricted
+  info:
+    env:
+      enabled: true
+
+# maintaining EurekaServer related properties in the ConfigServer
