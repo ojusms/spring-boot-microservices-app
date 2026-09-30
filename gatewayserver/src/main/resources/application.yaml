@@ -10,6 +10,7 @@ spring:
           discovery:      # the routes for services are available at http://localhot:8072/actuator/gateway/routes
             locator:      # API calls to services via gateway can be made at http://localhost:8072/service-name/api-path
               enabled: true      # ex 'http://localhost:8072/ACCOUNTS/api/create'. Service names are same as seen in Eureka dashboard
+              lowerCaseServiceId: true      # property to enable lower case service names in API URI
 
 info:
   app:
