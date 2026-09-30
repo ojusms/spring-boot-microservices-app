@@ -6,6 +6,8 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 
+import java.time.LocalDateTime;
+
 /*
 An edge server/gateway server/API gateway is a server which acts as a single entry point for external traffic
 into the microservices network. External clients are not granted access to directly invoke the service instances
@@ -34,7 +36,8 @@ public class GatewayserverApplication {
 		return routeLocatorBuilder.routes()
 				.route(p -> p
 						.path("/demobank/accounts/**")
-						.filters(f -> f.rewritePath("/demobank/accounts/(?<segment>.*)","/${segment}"))
+						.filters(f -> f.rewritePath("/demobank/accounts/(?<segment>.*)","/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))	//add custom field to response header for this custom route
 						.uri("lb://ACCOUNTS"))
 				.route(p -> p
 						.path("/demobank/cards/**")
