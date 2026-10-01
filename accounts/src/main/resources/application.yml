@@ -81,3 +81,10 @@ info:
     name: accounts            # this value is displayed as part of JSON on Eureka Dashboard. The name in the URL for the same page on Eureka server is taken from Spring.Application.Name property.
     description: Accounts service of Demo Bank application
     version: 1.0.0
+
+# enable logging level for DEBUG for all code in com.demobank.accounts package to be visible on console
+logging:
+  level:
+    com:
+      demobank:
+        accounts: DEBUG

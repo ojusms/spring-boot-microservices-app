@@ -29,11 +29,12 @@ public class CustomersServiceImpl implements ICustomersService {
 
     /**
      *
-     * @param mobileNumber Input mobile number
+     * @param mobileNumber  Input mobile number
+     * @param correlationId Correlation ID for the request from API Gateway
      * @return {@link CustomerDetailsDTO} object
      */
     @Override
-    public CustomerDetailsDTO fetchCustomerDetails(String mobileNumber) {
+    public CustomerDetailsDTO fetchCustomerDetails(String mobileNumber, String correlationId) {
         Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
                 () -> new ResourceNotFoundException("Customer","mobileNumber",mobileNumber)
         );
@@ -45,11 +46,11 @@ public class CustomersServiceImpl implements ICustomersService {
         // populate Accounts details into CustomerDetailsDTO
         customerDetailsDTO.setAccountsDTO(AccountsMapper.mapToAccountsDTO(accounts, new AccountsDTO()));
         // make an API call to Cards service via FeignClient to get Cards details
-        ResponseEntity<CardsDTO> cardsDTOResponseEntity = cardsFeignClient.findCard(mobileNumber);
+        ResponseEntity<CardsDTO> cardsDTOResponseEntity = cardsFeignClient.findCard(correlationId, mobileNumber);
         // populate Cards details into CustomerDetailsDTO
         customerDetailsDTO.setCardsDTO(cardsDTOResponseEntity.getBody());
         // make an API call to Loans service via FeignClient to get Loans details
-        ResponseEntity<LoansDTO> loansDTOResponseEntity = loansFeignClient.findLoan(mobileNumber);
+        ResponseEntity<LoansDTO> loansDTOResponseEntity = loansFeignClient.findLoan(correlationId, mobileNumber);
         // populate Loans details into CustomerDetailsDTO
         customerDetailsDTO.setLoansDTO(loansDTOResponseEntity.getBody());
         return customerDetailsDTO;

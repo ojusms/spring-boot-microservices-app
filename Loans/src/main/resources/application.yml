@@ -60,3 +60,9 @@ info:
     name: loans
     description: Loans service of Demo Bank application
     version: 1.0.0
+
+logging:
+  level:
+    com:
+      DemoBank:
+        Loans: DEBUG

@@ -4,6 +4,7 @@ import com.demobank.accounts.DTO.CardsDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /*
@@ -24,5 +25,6 @@ enough to serialize into what target service expects and deserialize what target
 public interface CardsFeignClient {
 
     @GetMapping("/api/fetch")
-    ResponseEntity<CardsDTO> findCard(@RequestParam String mobileNumber) ;
+    ResponseEntity<CardsDTO> findCard(@RequestHeader("demobank-correlation-id") String number,
+                                      @RequestParam String mobileNumber);
 }
