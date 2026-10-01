@@ -31,3 +31,10 @@ management:
       enabled: true
 
 # maintaining EurekaServer related properties in the ConfigServer
+
+# enable logging level for DEBUG for all code in com.demobank.gatewayserver package to be visible on console
+logging:
+  level:
+    com:
+      demobank:
+        gatewayserver: DEBUG
