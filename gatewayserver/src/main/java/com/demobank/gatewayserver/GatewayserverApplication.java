@@ -58,7 +58,8 @@ public class GatewayserverApplication {
 						.path("/demobank/accounts/**")
 						.filters(f -> f.rewritePath("/demobank/accounts/(?<segment>.*)","/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()) //add custom field to response header for this custom route
-                                .circuitBreaker(config -> config.setName("accountsCircuitBreaker")))	// add a circuit breaker for accounts service with custom name
+                                .circuitBreaker(config -> config.setName("accountsCircuitBreaker") // add a circuit breaker for accounts service with custom name
+                                        .setFallbackUri("forward:/fallback"))) // add a fallback in case of failure. This method returns a 200 with the message defined.
 						.uri("lb://ACCOUNTS"))
 				.route(p -> p
 						.path("/demobank/cards/**")
