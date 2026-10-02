@@ -59,11 +59,19 @@ management:
       exposure:
         include: "*"
   endpoint:
+    health:                   # health endpoint of actuator is modified to make /readiness and /liveness accessible.
+      probes:
+        enabled: true
     shutdown:
       access: unrestricted    # enable endpoint to let the application be gracefully shutdown. POST call to http://localhost:8080/actuator/shutdown.
   info:                       # In older versions of IntelliJ IDEA, the 'stop' button for a running app would perform a 'forceful kill' which gives no time for shutdown (needed to de-register with Eureka Server and other things). But modern versions of IDE send a 'soft-kill signal' first which initiates graceful shutdown
     env:
       enabled: true           # enable exposure of environment properties through Spring Boot Actuator's info endpoint
+  health:                     # turn on Spring Boot's tracking of these internal states (liveness and readiness)
+    readiness-state:          # done for running the gateway container in a Docker network prior to routing traffic
+      enabled: true
+    liveness-state:
+      enabled: true
 
 # properties for Eureka Server interaction as a Client
 eureka:
