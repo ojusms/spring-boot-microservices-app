@@ -82,41 +82,72 @@ services:
 
 
   accounts:
-    image: "demobank/accounts:s8"
+    image: "demobank/accounts:s9"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     environment:                       # defining environment variables to allow comms with configserver as mentioned above
       SPRING_APPLICATION_NAME: "accounts"
       #SPRING_DATASOURCE_URL: "jdbc:mysql://accountsdb:3306/accountsdb" not needed after moving back to H2 db
+    healthcheck:              # add health check for accounts so it can be used as a dependency for gatewayserver
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      retries: 10
+      timeout: 5s
+      start_period: 10s
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
 
   cards:
-    image: "demobank/cards:s8"
+    image: "demobank/cards:s9"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
       #SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"  # mysql listens on intenal container port 3306 and not exposed host port
+    healthcheck:              # add health check so it can be used as a dependency for gatewayserver
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      retries: 10
+      timeout: 5s
+      start_period: 10s
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
 
   loans:
-    image: "demobank/loans:s8"
+    image: "demobank/loans:s9"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
     environment:
       SPRING_APPLICATION_NAME: loans
       #SPRING_DATASOURCE_URL: "jdbc:mysql://loansdb:3306/loansdb"
+    healthcheck:              # add health check so it can be used as a dependency for gatewayserver
+      test: "curl --fail --silent localhost:8090/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      retries: 10
+      timeout: 5s
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-eurekaserver-config
+
+  # add a new service for GatewayServer container. It will be created only after accounts, cards, and loans services pass their health checks
+  gatewayserver:
+    image: "demobank/gatewayserver:s9"
+    container_name: "gatewayserver-ms"
+    ports:
+      - "8072:8072"
+    depends_on:
+      accounts:
+        condition: service_healthy
+      cards:
+        condition: service_healthy
+      loans:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
