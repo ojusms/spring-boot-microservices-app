@@ -47,12 +47,17 @@ public class CustomersServiceImpl implements ICustomersService {
         customerDetailsDTO.setAccountsDTO(AccountsMapper.mapToAccountsDTO(accounts, new AccountsDTO()));
         // make an API call to Cards service via FeignClient to get Cards details
         ResponseEntity<CardsDTO> cardsDTOResponseEntity = cardsFeignClient.findCard(correlationId, mobileNumber);
-        // populate Cards details into CustomerDetailsDTO
-        customerDetailsDTO.setCardsDTO(cardsDTOResponseEntity.getBody());
+        if (null!=cardsDTOResponseEntity) {
+            // populate Cards details into CustomerDetailsDTO if the value is not null. returning null is the
+            // fallback for circuit breaker in open state or an error occurring.
+            customerDetailsDTO.setCardsDTO(cardsDTOResponseEntity.getBody());
+        }
         // make an API call to Loans service via FeignClient to get Loans details
         ResponseEntity<LoansDTO> loansDTOResponseEntity = loansFeignClient.findLoan(correlationId, mobileNumber);
-        // populate Loans details into CustomerDetailsDTO
-        customerDetailsDTO.setLoansDTO(loansDTOResponseEntity.getBody());
+        if (null!=loansDTOResponseEntity) {
+            // populate Loans details into CustomerDetailsDTO if not null
+            customerDetailsDTO.setLoansDTO(loansDTOResponseEntity.getBody());
+        }
         return customerDetailsDTO;
     }
 }
