@@ -6,6 +6,10 @@ server:
 spring:
   application:
     name: accounts
+  cloud:                    # enable Spring Cloud Circuit Breaker for OpenFeign. FeignClient will now wrap all
+    openfeign:              # methods with a circuit breaker. Spring Cloud OpenFeign has integration to support
+      circuitbreaker:       # Circuit Breaker
+        enabled: true
   datasource:               # reverting to in-memory H2 database from MySQL running in containers to reduce number of containers
     url: jdbc:h2:mem:testdb
     driverClassname: org.h2.Driver
@@ -96,3 +100,12 @@ logging:
     com:
       demobank:
         accounts: DEBUG
+
+# configure property values for Resilience4J Spring Cloud Circuit Breaker
+resilience4j.circuitbreaker:
+  configs:
+    default:                                    # default values for all circuit breakers. Can change this to a named circuit breaker
+      slidingWindowSize: 10                     # consider this many requests at a time to make a decision based on threashold
+      permittedNumberOfCallsInHalfOpenState: 2  # number of calls/requests sent to closed service when in half-open state to check if recovered or not
+      failureRateThreshold: 50                  # threshold in % for failure rate of calls to transition circuit state
+      waitDurationInOpenState: 10000            # duration circuit waits in open state before transitioning to half-open
