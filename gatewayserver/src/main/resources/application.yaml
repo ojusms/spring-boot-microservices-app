@@ -11,6 +11,10 @@ spring:
             locator:      # API calls to services via gateway can be made at http://localhost:8072/service-name/api-path
               enabled: true      # ex 'http://localhost:8072/ACCOUNTS/api/create'. Service names are same as seen in Eureka dashboard
               lowerCaseServiceId: true      # property to enable lower case service names in API URI
+          httpclient:                  # add property to gateway server to configure global Http timeouts.
+            connect-timeout: 1000      # the prefix for properties in Spring Cloud Gateway using reactive WebFlux
+            response-timeout: 5s       # is spring.cloud.gateway.server.webflux.* and not the spring.cloud.gateway.*
+                                       # as seen in official docs. This is a rollout gap.
 
 info:
   app:
