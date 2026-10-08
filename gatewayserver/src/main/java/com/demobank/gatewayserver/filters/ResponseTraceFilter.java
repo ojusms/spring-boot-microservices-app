@@ -30,7 +30,9 @@ Gateway routes the request onward to whichever service (Accounts/Cards/Loans) â€
 That downstream service does its work and responds
 ResponseTraceFilter's lambda runs after that response comes back â€” it reads the correlation ID (still sitting on
 the original request object) and copies it onto the outgoing response headers too
-The final response, now carrying the correlation ID, goes back to the original caller
+The final response, now carrying the correlation ID, goes back to the original caller.
+The method is modified later to log and add header only if header is not present already. This prevents the
+header from being added multiple times in case of a retry mechanism.
  */
 @Configuration
 public class ResponseTraceFilter {
@@ -46,8 +48,10 @@ public class ResponseTraceFilter {
             return chain.filter(exchange).then(Mono.fromRunnable(() -> {
                     HttpHeaders requestHeaders = exchange.getRequest().getHeaders();
                     String correlationId = filterUtility.getCorrelationId(requestHeaders);
+                if (!(exchange.getResponse().getHeaders().containsHeader(FilterUtility.CORRELATION_ID))) {
                     LOGGER.debug("Updated the correlation Id to the outbound headers: {}", correlationId);
                     exchange.getResponse().getHeaders().add(FilterUtility.CORRELATION_ID, correlationId);
+                }
             }));
         };
     }
