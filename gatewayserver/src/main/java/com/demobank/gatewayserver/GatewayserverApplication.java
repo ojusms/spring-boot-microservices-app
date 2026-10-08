@@ -1,7 +1,12 @@
 package com.demobank.gatewayserver;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
+import io.github.resilience4j.timelimiter.TimeLimiterConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.circuitbreaker.resilience4j.ReactiveResilience4JCircuitBreakerFactory;
+import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JConfigBuilder;
+import org.springframework.cloud.client.circuitbreaker.Customizer;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -75,5 +80,35 @@ public class GatewayserverApplication {
 						.uri("lb://LOANS")).build();
 	}
 
+    /*
+    A method to change the Gateway CircuitBreaker timeout from default 1s to 4s.
+    ReactiveResilience4JCircuitBreakerFactory is the factory Spring Cloud uses to create
+    your circuit breakers (like accountsCircuitBreaker). "Reactive" is there because the Gateway
+    is WebFlux-based. Customizer<...> is a small interface with one method that receives the factory
+    so you can adjust it. Spring finds this bean at startup and applies it.
+    Customizer has a single method, so a lambda can implement it. factory -> means "here's the factory,
+    do this to it." It's an expression lambda with no braces, because the body is one method call.
+    configureDefault(...) says "when you create a circuit breaker, use this recipe unless it has its own
+    specific config."
+    id -> ... is a second, nested lambda. Spring calls it with the circuit breaker's name
+    (id, e.g. "accountsCircuitBreaker"), and it must return the config to use for that breaker.
+    new Resilience4JConfigBuilder(id)... - This is a builder, with the same chain-then-.build() pattern
+    as routes.
+    .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults()) sets the circuit breaker's rules (sliding window,
+    failure threshold, and so on) to Resilience4j's built-in defaults.
+    .timeLimiterConfig(...) sets the timeout rules. TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(4))
+    .build() means "start from defaults, but make the timeout 4 seconds.". The final .build() produces the
+    finished configuration object that the outer lambda returns.
+     */
+	@Bean
+	public Customizer<ReactiveResilience4JCircuitBreakerFactory> defaultCustomizer() {
+		return factory -> factory.configureDefault(id ->
+				new Resilience4JConfigBuilder(id)
+						.circuitBreakerConfig(CircuitBreakerConfig.ofDefaults())
+						.timeLimiterConfig(TimeLimiterConfig.custom()
+								.timeoutDuration(Duration.ofSeconds(4))
+								.build())
+						.build());
+	}
 
 }
