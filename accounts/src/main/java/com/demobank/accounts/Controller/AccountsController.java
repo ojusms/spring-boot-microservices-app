@@ -6,6 +6,7 @@ import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.DTO.ErrorResponseDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
 import com.demobank.accounts.Service.IAccountsService;
+import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -15,6 +16,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -35,6 +38,9 @@ public class AccountsController {
      constructor to class so Spring can do the autowiring since there is only 1 constructor
      */
     IAccountsService iAccountsService;
+
+    // add a logger to demonstrate retry mechanism for /build-info via Resilience4J
+    private static final Logger LOGGER = LoggerFactory.getLogger(CustomerController.class);
 
     /* using @Value annotation to show how external property/confguration can be injected during runtime.
     In this case the value is taken from the application.yml file. Since this field is not a Component,
@@ -189,11 +195,35 @@ public class AccountsController {
             description = "HTTP Status OK",
             responseCode = "200"
     )
+    /*
+    Add a retry mechanism for this API endpoint. Defined the fallback method below which returns a static value.
+    The fallback method has the same number(and type) of method parameters + 1, and the additional parameter is
+    a Throwable. In this case it is only a throwable since the retry target method has no parameters.
+    Demonstrated by adding a line to throw a NullPointerException and comment out the return statement
+    and invoke http://localhost:8080/api/build-info and see the static value in response and logs in terminal
+    and via gateway at http://localhost:8072/demobank/accounts/api/build-info (with or without demobank).
+    One observed behavior when invoking through the gateway server's custom route config - the custom route
+    for accounts has a circuitbreaker of its own. This has a default timeout of 1s. The waitDuration property
+    value in accounts can make the difference between getting a fallback response for build-info with a static
+    value or getting a fallback resposne from the gateway server. For ex. a value of 100, with exponential backoff
+    factor of 2, would result in 100 + 200 (for 2nd and 3rd attempt) = ~300ms which is under 1s. But a default
+    value of 500 would result in 500+1000 = ~1500ms which is > 1s and result in fallback of gateway CB.
+     */
+    @Retry(name = "getBuildInfo",fallbackMethod = "getBuildInfoFallback")
     @GetMapping("/build-info")
     public ResponseEntity<String> getBuildInfo() {
+        // add a logger statement to show number of times method is invoked to demonstrate retry mechanism
+        LOGGER.debug("getBuildInfo() method invoked");
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(buildVersion);
+    }
+
+    public ResponseEntity<String> getBuildInfoFallback(Throwable throwable) {
+        LOGGER.debug("getBuildInfoFallback() method invoked");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("0.9");
     }
 
     /*
