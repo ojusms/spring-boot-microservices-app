@@ -118,3 +118,7 @@ resilience4j.retry:                             # https://resilience4j.readme.io
       waitDuration: 100                         # fixed wait duration(ms) before each retry.
       enableExponentialBackoff: true            # enable exponential backoff
       exponentialBackoffMultiplier: 2           # set backoff multiplier/factor
+      ignoreExceptions:                         # this property accepts a list of exceptions for which retry
+        - java.lang.NullPointerException        # will not be done. It will make the initial call then go to fallback
+      retryExceptions:                          # this property accepts a list of exceptions only for which retry
+        - java.util.concurrent.TimeoutException # will be performed. ignoreException not needed when this is used.
