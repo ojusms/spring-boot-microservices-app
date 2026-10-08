@@ -109,3 +109,12 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2  # number of calls/requests sent to closed service when in half-open state to check if recovered or not
       failureRateThreshold: 50                  # threshold in % for failure rate of calls to transition circuit state
       waitDurationInOpenState: 10000            # duration circuit waits in open state before transitioning to half-open
+
+# configure property values for Resilience4J Spring Boot Retry. https://resilience4j.readme.io/docs/retry
+resilience4j.retry:                             # https://resilience4j.readme.io/docs/getting-started-3
+  configs:
+    default:
+      maxAttempts: 3                            # max number of attempts including initial call as 1st attempt
+      waitDuration: 100                         # fixed wait duration(ms) before each retry.
+      enableExponentialBackoff: true            # enable exponential backoff
+      exponentialBackoffMultiplier: 2           # set backoff multiplier/factor
