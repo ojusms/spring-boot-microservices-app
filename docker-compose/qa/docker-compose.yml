@@ -1,14 +1,26 @@
 # adding a separate docker compose file for each profile to handle running of configserver + services for that profile.
 services:
-  configserver:                         # adding configserver as a service with the same name to run in the
+  redis: # add a service for Redis datastore container. For Redis request rateLimiter
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL","redis-cli ping | grep PONG" ]
+      timeout: 10s
+      retries: 10
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  configserver: # adding configserver as a service with the same name to run in the
     image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
     container_name: "configserver-ms"   # by name since each container has its own isolated namespace/loopback
-    ports:                              # for 'localhost'. If accounts container is running outside a network,
+    ports: # for 'localhost'. If accounts container is running outside a network,
       - "8071:8071"                     # it won't be able to find configserver at localhost:8071 since accounts
       # container has its own 'localhost' and nothing is listening on 8071.
 
 
-    healthcheck:              # add a health check with instruction on what to test for. This one checks for readiness of configserver container
+    healthcheck: # add a health check with instruction on what to test for. This one checks for readiness of configserver container
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
       interval: 10s           # instruct the health check to start only 10s after the container starts, to perform
       retries: 10             # up to 10 retries, with an interval of 10s between each. If the check takes longer
@@ -34,7 +46,7 @@ services:
       service: microservice-configserver-config
 
   accounts:
-    image: "demobank/accounts:s9"
+    image: "demobank/accounts:s10"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -85,7 +97,7 @@ services:
       service: microservice-eurekaserver-config
 
   gatewayserver:
-    image: "demobank/gatewayserver:s9"
+    image: "demobank/gatewayserver:s10"
     container_name: "gatewayserver-ms"
     ports:
       - "8072:8072"
@@ -96,6 +108,10 @@ services:
         condition: service_healthy
       loans:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+     SPRING_DATA_REDIS_HOST: redis
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
