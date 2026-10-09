@@ -15,6 +15,20 @@ spring:
             connect-timeout: 1000      # the prefix for properties in Spring Cloud Gateway using reactive WebFlux
             response-timeout: 5s       # is spring.cloud.gateway.server.webflux.* and not the spring.cloud.gateway.*
                                        # as seen in official docs. This is a rollout gap.
+#          default-filters:            # this is how CircuitBreaker and Retry would be implemented in the GatewayServer
+#            - name: CircuitBreaker    # on the whole without the use of custom route config via RouteLocator bean in main app
+#              args:                   # default-filters gets applied to every route, including auto-generated ones.
+#                name: defaultCircuitBreaker
+#                fallbackUri: forward:/contactSupport
+#            - name: Retry             # one downside is that all services share a common CB called defaultCircuitBreaker
+#              args:                   # so if one service fails and circuit opens, the other service calls will
+#                retries: 3            # get the fallback too. Per service breakers can be iplemented in the YAML
+#                methods: GET          # with 'routes' property. It can be passed a list of routes with their own props each.
+#                backoff:
+#                  firstBackoff: 100ms
+#                  maxBackoff: 1000ms
+#                  factor: 2
+#                  basedOnPreviousValue: true
 
 info:
   app:
