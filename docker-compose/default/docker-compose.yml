@@ -48,6 +48,18 @@ services:
 #      file: common-config.yml
 #      service: microservice-db-config
 
+  redis:                                # add a service for Redis datastore container. For Redis request rateLimiter
+    image: redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL","redis-cli ping | grep PONG"]
+      timeout: 10s
+      retries: 10
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   configserver:                         # adding configserver as a service with the same name to run in the
     image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
     container_name: "configserver-ms"   # by name since each container has its own isolated namespace/loopback
@@ -82,7 +94,7 @@ services:
 
 
   accounts:
-    image: "demobank/accounts:s9"
+    image: "demobank/accounts:s10"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -137,7 +149,7 @@ services:
 
   # add a new service for GatewayServer container. It will be created only after accounts, cards, and loans services pass their health checks
   gatewayserver:
-    image: "demobank/gatewayserver:s9"
+    image: "demobank/gatewayserver:s10"
     container_name: "gatewayserver-ms"
     ports:
       - "8072:8072"
@@ -148,6 +160,10 @@ services:
         condition: service_healthy
       loans:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_DATA_REDIS_HOST: redis
     extends:
       file: common-config.yml
       service: microservice-eurekaserver-config
