@@ -6,6 +6,7 @@ import com.demobank.accounts.DTO.CustomerDTO;
 import com.demobank.accounts.DTO.ErrorResponseDTO;
 import com.demobank.accounts.DTO.ResponseDTO;
 import com.demobank.accounts.Service.IAccountsService;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -238,11 +239,24 @@ public class AccountsController {
             description = "HTTP Status OK",
             responseCode = "200"
     )
+    /*
+    Implement rate limiting via Resilience4J. fallbackMethod parameter is optional. Without a fallback, the response
+    is a 500 with ISE because of GlobalExceptionHandler. A fallback can be configured to return a static value
+    or a proper rate limited response. GlobalExceptionHandler can also be configured to handle
+    io.github.resilience4j.ratelimiter.RequestNotPermitted.class which extends RuntimeException
+     */
+    @RateLimiter(name = "getJavaVersion", fallbackMethod = "getJavaVersionFallback")
     @GetMapping("/java-version")
     public ResponseEntity<String> getJavaVersion() {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(environment.getProperty("JAVA_HOME"));
+    }
+
+    public ResponseEntity<String> getJavaVersionFallback(Throwable throwable) {
+        return ResponseEntity
+                .status(HttpStatus.TOO_MANY_REQUESTS)
+                .body("Too many requests. Try again after some time");
     }
 
     /*
