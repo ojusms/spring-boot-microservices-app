@@ -216,7 +216,7 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
-      
+
 #  commented out rabbit service since RabbitMQ is unused going forward.
 #  rabbit:                               # define a service named 'rabbit' to perform a health check on rabbitmq
 #    image: rabbitmq:4-management        # container since it is a dependency for configserver container. This

@@ -19,7 +19,7 @@ spring:
               lowerCaseServiceId: true      # property to enable lower case service names in API URI
           httpclient:                  # add property to gateway server to configure global Http timeouts.
             connect-timeout: 1000      # the prefix for properties in Spring Cloud Gateway using reactive WebFlux
-            response-timeout: 5s       # is spring.cloud.gateway.server.webflux.* and not the spring.cloud.gateway.*
+            response-timeout: 10s       # is spring.cloud.gateway.server.webflux.* and not the spring.cloud.gateway.*
                                        # as seen in official docs. This is a rollout gap.
 #          default-filters:            # this is how CircuitBreaker and Retry would be implemented in the GatewayServer
 #            - name: CircuitBreaker    # on the whole without the use of custom route config via RouteLocator bean in main app
