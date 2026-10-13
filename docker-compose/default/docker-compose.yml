@@ -5,6 +5,7 @@ services:
   # Loki is a log aggregator which aggregates and holds all logs from services/containres in the network.
   # Alloy is a log agent that takes logs from each service/container and sends it to Loki.
   # These are stored in the local filesystem in this case but can also be stored in the cloud.
+  # Logs can be queried and viewed on the Grafana dashboard at http://localhost:3000. Dashboards can be built here.
   read:
     image: grafana/loki:latest
     command: "-config.file=/etc/loki/config.yaml -target=read -query-scheduler.use-scheduler-ring=false"
@@ -61,11 +62,11 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
-  minio:
-    image: minio/minio
-    entrypoint:
-      - sh
-      - -euc
+  minio:                              # MinIO is no longer publicly available for free. The temporary alternative
+    image: quay.io/minio/aistor/minio # is the commercial successor MinIO AIStor which has a free tier, currently
+    entrypoint:                       # with images anonymously pullable from Quay.io. A recommended
+      - sh                            # alternative is SeaweedFS. Something to look into going forward.
+      - -euc                          # https://byteiota.com/minio-docker-hub-quay-anonymous-pull-fix/
       - |
         mkdir -p /data/loki-data && \
         mkdir -p /data/loki-ruler && \
@@ -333,7 +334,7 @@ services:
     image: "demobank/cards:s9"
     container_name: "cards-ms"
     ports:
-      - "9000:9000"
+      - "9010:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
       #SPRING_DATASOURCE_URL: "jdbc:mysql://cardsdb:3306/cardsdb"  # mysql listens on intenal container port 3306 and not exposed host port
