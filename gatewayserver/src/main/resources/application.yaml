@@ -53,7 +53,10 @@ management:
   info:
     env:
       enabled: true
-
+  metrics:
+    tags:
+      application: ${spring.application.name}
+      
 # maintaining EurekaServer related properties in the ConfigServer
 
 # enable logging level for DEBUG for all code in com.demobank.gatewayserver package to be visible on console

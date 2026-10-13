@@ -76,6 +76,9 @@ management:
       enabled: true
     liveness-state:
       enabled: true
+  metrics:                    # configuration key property to apply a global, common tag named 'application' to
+    tags:                     # all metrics exported by Micrometer. Useful for monitoring on a Grafana dashboard.
+      application: ${spring.application.name}
 
 # properties for Eureka Server interaction as a Client
 eureka:

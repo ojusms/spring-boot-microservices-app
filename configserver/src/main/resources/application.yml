@@ -32,6 +32,9 @@ management:
     health:             # the plural 'endpoints' property with 'web' below is used to expose endpoints under actuator over HTTP
       probes:           # in this case, health endpoint of actuator is modified to make /readiness and /liveness accessible.
         enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 #encrypt:                     # This can be used to encrypt the passwords or sensitive plaintext when storing in a Git repo.
 # key: "{encryptionKey}"      # The field value should appear as "{cipher}cipherText" on the Git repo.
