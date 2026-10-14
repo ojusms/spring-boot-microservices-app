@@ -129,7 +129,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>demobank/cards:s9</name>
+						<name>demobank/cards:s11</name>
 						<builder>paketobuildpacks/builder-jammy-full</builder>
 					</image>
 				</configuration>

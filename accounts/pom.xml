@@ -140,7 +140,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>demobank/${project.artifactId}:s10</name>
+						<name>demobank/${project.artifactId}:s11</name>
 						<builder>paketobuildpacks/builder-jammy-full</builder>
 					</image>
 				</configuration>

@@ -128,7 +128,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<image>
-						<name>demobank/loans:s9</name>
+						<name>demobank/loans:s11</name>
 						<builder>paketobuildpacks/builder-jammy-full</builder>
 					</image>
 				</configuration>
@@ -139,7 +139,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>demobank/loans:s8</image>
+						<image>demobank/loans:s11</image>
 					</to>
 				</configuration>
 			</plugin>

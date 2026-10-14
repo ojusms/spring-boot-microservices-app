@@ -101,7 +101,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>demobank/${project.artifactId}:s10</image>
+						<image>demobank/${project.artifactId}:s11</image>
 					</to>
 				</configuration>
 			</plugin>

@@ -73,7 +73,7 @@
 				 Using Paketo and specifying jammy full base image to include curl for configserver. Other services can use Jib as usual -->
 				<configuration>
 					<image>
-						<name>demobank/${project.artifactId}:s6</name>
+						<name>demobank/${project.artifactId}:s11</name>
 						<builder>paketobuildpacks/builder-jammy-full</builder>
 					</image>
 				</configuration>
@@ -84,7 +84,7 @@
 				<version>3.5.2</version>
 				<configuration>
 					<to>
-						<image>demobank/${project.artifactId}:s6</image>
+						<image>demobank/${project.artifactId}:s11</image>
 					</to>
 				</configuration>
 			</plugin>
