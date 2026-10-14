@@ -89,7 +89,9 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
- # add a service for prometheus
+ # add a service for prometheus. Prometheus dashboard can be accessed at http://localhost:9090.
+ # Prometheus is also added as a datasource for Grafana (localhost:3000). We can create custom dashboards on metrics
+ # on the Graphana UI using Prometheus as the source or even import OSS dashboards for Prometheus from Grafana website.
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -303,7 +305,7 @@ services:
 #      service: network-deploy-service
 
   configserver:                         # adding configserver as a service with the same name to run in the
-    image: "demobank/configserver:s6"   # network 'demobank' to allow the containers to communicate with each other
+    image: "demobank/configserver:s11"   # network 'demobank' to allow the containers to communicate with each other
     container_name: "configserver-ms"   # by name since each container has its own isolated namespace/loopback
     ports:                              # for 'localhost'. If accounts container is running outside a network,
       - "8071:8071"                     # it won't be able to find configserver at localhost:8071 since accounts
@@ -320,7 +322,7 @@ services:
       service: microservice-base-config
 
   eurekaserver:               # adding eurekaserver as a service with the same name to run in the
-    image: "demobank/eurekaserver:s8"
+    image: "demobank/eurekaserver:s11"
     container_name: "eurekaserver-ms"
     ports:
       - "8070:8070"
@@ -336,7 +338,7 @@ services:
 
 
   accounts:
-    image: "demobank/accounts:s10"
+    image: "demobank/accounts:s11"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -354,7 +356,7 @@ services:
       service: microservice-eurekaserver-config
 
   cards:
-    image: "demobank/cards:s9"
+    image: "demobank/cards:s11"
     container_name: "cards-ms"
     ports:
       - "9010:9000"
@@ -372,7 +374,7 @@ services:
       service: microservice-eurekaserver-config
 
   loans:
-    image: "demobank/loans:s9"
+    image: "demobank/loans:s11"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
@@ -391,7 +393,7 @@ services:
 
   # add a new service for GatewayServer container. It will be created only after accounts, cards, and loans services pass their health checks
   gatewayserver:
-    image: "demobank/gatewayserver:s10"
+    image: "demobank/gatewayserver:s11"
     container_name: "gatewayserver-ms"
     ports:
       - "8072:8072"
