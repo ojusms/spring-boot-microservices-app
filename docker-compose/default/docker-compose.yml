@@ -89,6 +89,17 @@ services:
     extends:
       file: common-config.yml
       service: network-deploy-service
+ # add a service for prometheus
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   grafana:
     image: grafana/grafana:latest
@@ -114,6 +125,18 @@ services:
               httpHeaderName1: "X-Scope-OrgID"
             secureJsonData:
               httpHeaderValue1: "tenant1"
+          - name: Prometheus                
+            type: prometheus
+            uid: prometheus
+            url: http://prometheus:9090
+            access: proxy
+            orgId: 1
+            basicAuth: false
+            isDefault: false
+            version: 1
+            editable: true
+            jsonData: 
+              httpMethod: GET
         EOF
         /run.sh
     ports:
