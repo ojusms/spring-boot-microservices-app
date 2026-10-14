@@ -1,0 +1,30 @@
+global:
+  scrape_interval: 5s       # how frequently to scrape targets
+  evaluation_interval: 5s   # how frequently to evaluate rules
+
+# define configurations list for scraping metrics
+scrape_configs:
+  - job_name: accounts                 # name for this job. Must be unique across scrape config
+    metrics_path: /actuator/prometheus # the HTTP resource path on which to fetch metrics from the target
+    static_configs:                    # list of labeled statically configured targets for this job
+      - targets: [accounts:8080]
+  - job_name: cards
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [cards:9000]
+  - job_name: loans
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [loans:8090]
+  - job_name: gatewayserver
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [gatewayserver:8072]
+  - job_name: eurekaserver
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [eurekaserver:8070]
+  - job_name: configserver
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: [configserver:8071]
