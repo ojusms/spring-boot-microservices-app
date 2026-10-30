@@ -1,6 +1,8 @@
 package com.demobank.accounts;
 
 import com.demobank.accounts.DTO.AccountsContactInfoDTO;
+import com.demobank.accounts.Service.Client.CardsClient;
+import com.demobank.accounts.Service.Client.LoansClient;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -11,8 +13,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.web.service.registry.ImportHttpServices;
 
 @SpringBootApplication
+@ImportHttpServices(group = "cards", types = CardsClient.class)
+@ImportHttpServices(group = "loans", types = LoansClient.class)
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl") // tell spring to enable auditing with the bean to use.
 @OpenAPIDefinition(
 		info = @Info(
