@@ -11,7 +11,9 @@ import com.demobank.accounts.Mapper.AccountsMapper;
 import com.demobank.accounts.Mapper.CustomerMapper;
 import com.demobank.accounts.Repository.AccountsRepository;
 import com.demobank.accounts.Repository.CustomerRepository;
+import com.demobank.accounts.Service.Client.CardsClient;
 import com.demobank.accounts.Service.Client.CardsFeignClient;
+import com.demobank.accounts.Service.Client.LoansClient;
 import com.demobank.accounts.Service.Client.LoansFeignClient;
 import com.demobank.accounts.Service.ICustomersService;
 import lombok.AllArgsConstructor;
@@ -24,8 +26,10 @@ public class CustomersServiceImpl implements ICustomersService {
 
     private AccountsRepository accountsRepository;
     private CustomerRepository customerRepository;
-    private CardsFeignClient cardsFeignClient;
-    private LoansFeignClient loansFeignClient;
+//    private CardsFeignClient cardsFeignClient;
+//    private LoansFeignClient loansFeignClient;
+    private CardsClient cardsClient;
+    private LoansClient loansClient;
 
     /**
      *
@@ -46,14 +50,14 @@ public class CustomersServiceImpl implements ICustomersService {
         // populate Accounts details into CustomerDetailsDTO
         customerDetailsDTO.setAccountsDTO(AccountsMapper.mapToAccountsDTO(accounts, new AccountsDTO()));
         // make an API call to Cards service via FeignClient to get Cards details
-        ResponseEntity<CardsDTO> cardsDTOResponseEntity = cardsFeignClient.findCard(correlationId, mobileNumber);
+        ResponseEntity<CardsDTO> cardsDTOResponseEntity = cardsClient.findCard(correlationId, mobileNumber);
         if (null!=cardsDTOResponseEntity) {
             // populate Cards details into CustomerDetailsDTO if the value is not null. returning null is the
             // fallback for circuit breaker in open state or an error occurring.
             customerDetailsDTO.setCardsDTO(cardsDTOResponseEntity.getBody());
         }
         // make an API call to Loans service via FeignClient to get Loans details
-        ResponseEntity<LoansDTO> loansDTOResponseEntity = loansFeignClient.findLoan(correlationId, mobileNumber);
+        ResponseEntity<LoansDTO> loansDTOResponseEntity = loansClient.findLoan(correlationId, mobileNumber);
         if (null!=loansDTOResponseEntity) {
             // populate Loans details into CustomerDetailsDTO if not null
             customerDetailsDTO.setLoansDTO(loansDTOResponseEntity.getBody());
