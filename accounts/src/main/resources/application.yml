@@ -33,6 +33,12 @@ spring:
     import: "optional:configserver:http://localhost:8071/"  # adding 'optional' since this value does not get overridden when another value is passed as an environment variable. Apparently this one property in spring does not use the highest precedence value, but evaluates are values for spring.config.import. Since this is running in a container, it cannot reach configserver via localhost hence optional.
       # telling accounts service to import configs from the configserver
                                                    # at that location. The string 'configserver' is mandatory here irrespective of server application name.
+  http:                       # add the property to configure HTTP RestClient for finding cards and loans
+    serviceclient:            # groups (from main app annotation) from the load balancer to make HTTP calls.
+      cards:
+        base-url: lb://cards
+      loans:
+        base-url: lb://loans
 #  rabbitmq:              # define broker credentials for RabbitMQ (container running on port 5672) to use. Commenting out since not used going forward.
 #    host: localhost      # 'busrefresh' endpoint of actuator for Spring Cloud Bus. These are default values
 #    port: 5672           # and do not need to be mentioned explicitly since Spring Cloud is already configured
